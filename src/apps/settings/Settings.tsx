@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { AppProps } from '@/types';
-import { useThemeStore } from '@/stores';
+import { useThemeStore, WALLPAPERS } from '@/stores/themeStore';
 import {
   ColorFilled,
   PersonFilled,
@@ -11,6 +11,8 @@ import {
   WeatherMoonFilled,
   WeatherSunnyFilled,
   DesktopFilled,
+  ImageFilled,
+  CheckmarkFilled,
 } from '@fluentui/react-icons';
 
 type SettingsPage = 'personalization' | 'system' | 'about';
@@ -99,6 +101,12 @@ export function Settings({ windowId }: AppProps) {
 function PersonalizationPage() {
   const theme = useThemeStore((state) => state.theme);
   const setTheme = useThemeStore((state) => state.setTheme);
+  const wallpaper = useThemeStore((state) => state.wallpaper);
+  const setWallpaper = useThemeStore((state) => state.setWallpaper);
+
+  // Separate image wallpapers from solid colors
+  const imageWallpapers = WALLPAPERS.filter(w => !w.id.startsWith('solid-'));
+  const solidColors = WALLPAPERS.filter(w => w.id.startsWith('solid-'));
 
   return (
     <div>
@@ -107,8 +115,58 @@ function PersonalizationPage() {
       </h1>
 
       <div className="space-y-6">
+        {/* Background/Wallpaper Selection */}
+        <SettingsSection title="Background">
+          <div className="space-y-4">
+            {/* Image Wallpapers */}
+            <div>
+              <p className="text-xs text-win-text-secondary dark:text-win-dark-text-secondary mb-2">
+                Choose a picture
+              </p>
+              <div className="grid grid-cols-4 gap-2">
+                {imageWallpapers.map((wp) => (
+                  <WallpaperOption
+                    key={wp.id}
+                    wallpaper={wp}
+                    isSelected={wallpaper === wp.id}
+                    onClick={() => setWallpaper(wp.id)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Solid Colors */}
+            <div>
+              <p className="text-xs text-win-text-secondary dark:text-win-dark-text-secondary mb-2">
+                Solid colors
+              </p>
+              <div className="flex gap-2">
+                {solidColors.map((wp) => (
+                  <button
+                    key={wp.id}
+                    onClick={() => setWallpaper(wp.id)}
+                    className={cn(
+                      'w-10 h-10 rounded-lg border-2 transition-all duration-100',
+                      'flex items-center justify-center',
+                      wallpaper === wp.id
+                        ? 'border-win-accent ring-2 ring-win-accent/30'
+                        : 'border-transparent hover:border-win-accent/50'
+                    )}
+                    style={{ backgroundColor: wp.color }}
+                    title={wp.name}
+                  >
+                    {wallpaper === wp.id && (
+                      <CheckmarkFilled className="w-4 h-4 text-white drop-shadow-md" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </SettingsSection>
+
         {/* Theme Selection */}
-        <SettingsSection title="Choose your color">
+        <SettingsSection title="Choose your mode">
           <div className="grid grid-cols-2 gap-4">
             <ThemeOption
               label="Light"
@@ -129,6 +187,52 @@ function PersonalizationPage() {
         </SettingsSection>
       </div>
     </div>
+  );
+}
+
+// Wallpaper option component
+function WallpaperOption({
+  wallpaper,
+  isSelected,
+  onClick,
+}: {
+  wallpaper: typeof WALLPAPERS[0];
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'relative aspect-video rounded-lg overflow-hidden',
+        'border-2 transition-all duration-100',
+        isSelected
+          ? 'border-win-accent ring-2 ring-win-accent/30'
+          : 'border-win-border dark:border-win-dark-border hover:border-win-accent/50'
+      )}
+    >
+      {wallpaper.url ? (
+        <img
+          src={wallpaper.url}
+          alt={wallpaper.name}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div
+          className="w-full h-full flex items-center justify-center"
+          style={{ backgroundColor: wallpaper.color }}
+        >
+          <ImageFilled className="w-6 h-6 text-white/50" />
+        </div>
+      )}
+      {isSelected && (
+        <div className="absolute inset-0 bg-win-accent/20 flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full bg-win-accent flex items-center justify-center">
+            <CheckmarkFilled className="w-4 h-4 text-white" />
+          </div>
+        </div>
+      )}
+    </button>
   );
 }
 

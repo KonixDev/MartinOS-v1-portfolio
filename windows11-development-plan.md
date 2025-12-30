@@ -726,10 +726,14 @@ export const db = new FileSystemDB();
 
 #### 6.1 Browser
 - [x] Crear estructura en `apps/browser/`
-- [x] Address bar
-- [x] iframe sandboxed
-- [ ] Tabs (básico)
-- [x] Navegación básica
+- [x] Address bar con indicador de seguridad
+- [x] iframe sandboxed con permisos apropiados
+- [x] Home page con sitios sugeridos iframe-compatibles:
+  - Wikipedia, DuckDuckGo Lite, Archive.org
+  - OpenStreetMap, Hacker News, Reddit (old)
+- [x] Navegación back/forward con historial
+- [x] Búsqueda integrada con DuckDuckGo Lite
+- [ ] Tabs (básico) - opcional para futuro
 
 #### 6.2 Image Viewer
 - [x] Crear `apps/image-viewer/ImageViewer.tsx`
@@ -743,12 +747,21 @@ export const db = new FileSystemDB();
 - [x] Win: Toggle Start Menu
 - [x] Alt+Tab: Cambiar ventana (simplificado)
 
-#### 6.4 Polish Visual
+#### 6.4 Settings Personalization
+
+- [x] Wallpaper picker con thumbnails
+- [x] 7 fondos de pantalla de imagen
+- [x] 5 colores sólidos como opción
+- [x] Persistencia de preferencias en localStorage
+- [x] Toggle Light/Dark mode
+
+#### 6.5 Polish Visual
 - [x] Revisar todos los efectos acrylic
 - [x] Ajustar animaciones
 - [ ] Revisar responsive (mínimo tablets)
 - [x] Dark mode completo
-- [ ] Favicon y meta tags
+- [x] Favicon y meta tags (OpenGraph, Twitter Cards)
+- [x] Viewport y theme-color configurados
 
 ---
 

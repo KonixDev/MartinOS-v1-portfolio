@@ -9,45 +9,75 @@ import {
   ArrowClockwiseFilled,
   HomeFilled,
   LockClosedFilled,
+  GlobeFilled,
 } from '@fluentui/react-icons';
 
-const DEFAULT_URL = 'https://www.wikipedia.org';
-const HOME_URL = 'https://www.wikipedia.org';
+// Sites that work well with iframes
+const SUGGESTED_SITES = [
+  { name: 'Wikipedia', url: 'https://www.wikipedia.org', icon: '📚', color: '#fff' },
+  { name: 'DuckDuckGo', url: 'https://lite.duckduckgo.com/lite/', icon: '🦆', color: '#de5833' },
+  { name: 'Archive.org', url: 'https://archive.org', icon: '📦', color: '#428bca' },
+  { name: 'OpenStreetMap', url: 'https://www.openstreetmap.org/export/embed.html', icon: '🗺️', color: '#7ebc6f' },
+  { name: 'Hacker News', url: 'https://news.ycombinator.com', icon: '📰', color: '#ff6600' },
+  { name: 'Reddit (old)', url: 'https://old.reddit.com', icon: '🔴', color: '#ff4500' },
+];
+
+const HOME_URL = 'about:home';
 
 export function Browser({ windowId }: AppProps) {
-  const [url, setUrl] = useState(DEFAULT_URL);
-  const [inputUrl, setInputUrl] = useState(DEFAULT_URL);
-  const [isLoading, setIsLoading] = useState(true);
-  const [canGoBack, setCanGoBack] = useState(false);
-  const [canGoForward, setCanGoForward] = useState(false);
+  const [url, setUrl] = useState(HOME_URL);
+  const [inputUrl, setInputUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [history, setHistory] = useState<string[]>([HOME_URL]);
+  const [historyIndex, setHistoryIndex] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const navigate = useCallback((newUrl: string) => {
+  const isHomePage = url === HOME_URL;
+
+  const navigate = useCallback((newUrl: string, addToHistory = true) => {
     let finalUrl = newUrl;
 
+    // Handle home page
+    if (finalUrl === HOME_URL) {
+      setUrl(HOME_URL);
+      setInputUrl('');
+      if (addToHistory) {
+        setHistory(prev => [...prev.slice(0, historyIndex + 1), HOME_URL]);
+        setHistoryIndex(prev => prev + 1);
+      }
+      return;
+    }
+
     // Add https:// if no protocol specified
-    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://') && !finalUrl.startsWith('about:')) {
       // Check if it looks like a URL or a search query
       if (finalUrl.includes('.') && !finalUrl.includes(' ')) {
         finalUrl = 'https://' + finalUrl;
       } else {
-        // Treat as search query
-        finalUrl = `https://www.google.com/search?q=${encodeURIComponent(finalUrl)}`;
+        // Treat as search query using DuckDuckGo (iframe-friendly)
+        finalUrl = `https://lite.duckduckgo.com/lite/?q=${encodeURIComponent(finalUrl)}`;
       }
     }
 
     setUrl(finalUrl);
     setInputUrl(finalUrl);
     setIsLoading(true);
-  }, []);
+
+    if (addToHistory) {
+      setHistory(prev => [...prev.slice(0, historyIndex + 1), finalUrl]);
+      setHistoryIndex(prev => prev + 1);
+    }
+  }, [historyIndex]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(inputUrl);
+    if (inputUrl.trim()) {
+      navigate(inputUrl);
+    }
   };
 
   const handleRefresh = () => {
-    if (iframeRef.current) {
+    if (iframeRef.current && !isHomePage) {
       setIsLoading(true);
       iframeRef.current.src = url;
     }
@@ -57,10 +87,34 @@ export function Browser({ windowId }: AppProps) {
     navigate(HOME_URL);
   };
 
+  const handleBack = () => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      const prevUrl = history[newIndex];
+      setUrl(prevUrl);
+      setInputUrl(prevUrl === HOME_URL ? '' : prevUrl);
+      if (prevUrl !== HOME_URL) setIsLoading(true);
+    }
+  };
+
+  const handleForward = () => {
+    if (historyIndex < history.length - 1) {
+      const newIndex = historyIndex + 1;
+      setHistoryIndex(newIndex);
+      const nextUrl = history[newIndex];
+      setUrl(nextUrl);
+      setInputUrl(nextUrl === HOME_URL ? '' : nextUrl);
+      if (nextUrl !== HOME_URL) setIsLoading(true);
+    }
+  };
+
   const handleIframeLoad = () => {
     setIsLoading(false);
   };
 
+  const canGoBack = historyIndex > 0;
+  const canGoForward = historyIndex < history.length - 1;
   const isSecure = url.startsWith('https://');
 
   return (
@@ -77,13 +131,13 @@ export function Browser({ windowId }: AppProps) {
         <div className="flex items-center gap-0.5">
           <NavButton
             icon={<ArrowLeftFilled className="w-4 h-4" />}
-            onClick={() => {}}
+            onClick={handleBack}
             disabled={!canGoBack}
             title="Back"
           />
           <NavButton
             icon={<ArrowRightFilled className="w-4 h-4" />}
-            onClick={() => {}}
+            onClick={handleForward}
             disabled={!canGoForward}
             title="Forward"
           />
@@ -133,36 +187,92 @@ export function Browser({ windowId }: AppProps) {
       </div>
 
       {/* Browser Content */}
-      <div className="flex-1 relative bg-win-window-bg dark:bg-win-dark-window-bg">
+      <div className="flex-1 relative bg-win-window-bg dark:bg-win-dark-window-bg overflow-hidden">
         {/* Loading indicator */}
         {isLoading && (
-          <div className="absolute top-0 left-0 right-0 h-0.5 bg-win-accent animate-pulse" />
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-win-accent animate-pulse z-10" />
         )}
 
-        {/* Iframe */}
-        <iframe
-          ref={iframeRef}
-          src={url}
-          className="w-full h-full border-none"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          onLoad={handleIframeLoad}
-          title="Browser"
-        />
+        {/* Home Page */}
+        {isHomePage ? (
+          <HomePage onNavigate={navigate} />
+        ) : (
+          <>
+            {/* Iframe */}
+            <iframe
+              ref={iframeRef}
+              src={url}
+              className="w-full h-full border-none"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              onLoad={handleIframeLoad}
+              title="Browser"
+            />
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
 
-        {/* Blocked content notice */}
-        <div
-          className={cn(
-            'absolute bottom-4 left-4 right-4',
-            'p-3 rounded-lg shadow-lg',
-            'bg-amber-50 dark:bg-amber-900/20',
-            'border border-amber-200 dark:border-amber-800',
-            'text-sm text-amber-800 dark:text-amber-200'
-          )}
-        >
-          <strong>Note:</strong> Some websites may not display correctly due to
-          iframe restrictions (X-Frame-Options, CSP). This is a limitation of
-          web-based browsers.
+// Home Page Component
+function HomePage({ onNavigate }: { onNavigate: (url: string) => void }) {
+  return (
+    <div className="h-full flex flex-col items-center justify-center p-8 bg-gradient-to-b from-win-bg-secondary to-win-bg-primary dark:from-win-dark-bg-secondary dark:to-win-dark-bg-primary">
+      {/* Logo */}
+      <div className="mb-8 text-center">
+        <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-win-accent flex items-center justify-center">
+          <GlobeFilled className="w-10 h-10 text-white" />
         </div>
+        <h1 className="text-2xl font-semibold text-win-text-primary dark:text-win-dark-text-primary">
+          MartinOS Browser
+        </h1>
+        <p className="text-sm text-win-text-secondary dark:text-win-dark-text-secondary mt-1">
+          Explore iframe-compatible websites
+        </p>
+      </div>
+
+      {/* Suggested Sites */}
+      <div className="w-full max-w-2xl">
+        <h2 className="text-sm font-medium text-win-text-secondary dark:text-win-dark-text-secondary mb-4 text-center">
+          Suggested Sites
+        </h2>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
+          {SUGGESTED_SITES.map((site) => (
+            <button
+              key={site.name}
+              onClick={() => onNavigate(site.url)}
+              className={cn(
+                'flex flex-col items-center gap-2 p-3 rounded-lg',
+                'transition-all duration-150',
+                'hover:bg-black/5 dark:hover:bg-white/10',
+                'active:scale-95'
+              )}
+            >
+              <div
+                className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
+                style={{ backgroundColor: site.color + '20' }}
+              >
+                {site.icon}
+              </div>
+              <span className="text-xs text-win-text-primary dark:text-win-dark-text-primary text-center truncate w-full">
+                {site.name}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Info Notice */}
+      <div
+        className={cn(
+          'mt-8 p-3 rounded-lg max-w-md',
+          'bg-amber-50 dark:bg-amber-900/20',
+          'border border-amber-200 dark:border-amber-800',
+          'text-xs text-amber-800 dark:text-amber-200 text-center'
+        )}
+      >
+        <strong>Note:</strong> Some websites block iframe embedding.
+        The sites above are known to work well.
       </div>
     </div>
   );

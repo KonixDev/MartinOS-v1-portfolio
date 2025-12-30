@@ -5,21 +5,38 @@ import { useContextMenu } from 'react-contexify';
 import { cn } from '@/lib/utils';
 import { TASKBAR_HEIGHT } from '@/constants';
 import { DESKTOP_MENU_ID } from '@/components/context-menu';
+import { useThemeStore, WALLPAPERS } from '@/stores/themeStore';
 
 interface DesktopProps {
-  wallpaper?: string;
   children?: ReactNode;
 }
 
-export function Desktop({ wallpaper, children }: DesktopProps) {
+export function Desktop({ children }: DesktopProps) {
   const { show } = useContextMenu({
     id: DESKTOP_MENU_ID,
   });
 
-  // Default Windows 11 gradient if no wallpaper
-  const backgroundStyle = wallpaper
-    ? { backgroundImage: `url(${wallpaper})` }
-    : { background: 'linear-gradient(135deg, #0078D4 0%, #5C2D91 50%, #D13438 100%)' };
+  const wallpaperId = useThemeStore((state) => state.wallpaper);
+  const wallpaperColor = useThemeStore((state) => state.wallpaperColor);
+
+  // Find wallpaper from store
+  const selectedWallpaper = WALLPAPERS.find(w => w.id === wallpaperId);
+
+  // Build background style based on selection
+  const getBackgroundStyle = () => {
+    // Solid color wallpaper
+    if (wallpaperId.startsWith('solid-') || !selectedWallpaper?.url) {
+      return { backgroundColor: wallpaperColor };
+    }
+    // Image wallpaper
+    if (selectedWallpaper?.url) {
+      return { backgroundImage: `url(${selectedWallpaper.url})` };
+    }
+    // Default gradient
+    return { background: 'linear-gradient(135deg, #0078D4 0%, #5C2D91 50%, #D13438 100%)' };
+  };
+
+  const backgroundStyle = getBackgroundStyle();
 
   const handleContextMenu = (event: React.MouseEvent) => {
     // Only show context menu if clicking on the desktop itself
