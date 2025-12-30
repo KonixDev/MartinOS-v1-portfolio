@@ -12,21 +12,13 @@ export function Clock({ onCalendarClick }: ClockProps) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    // Update every minute
+    // Update every second to ensure clock stays accurate
+    // The UI only shows minutes, so most updates won't cause re-renders
     const interval = setInterval(() => {
       setNow(new Date());
-    }, 60000);
+    }, 1000);
 
-    // Also update immediately on the next minute boundary
-    const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-    const timeout = setTimeout(() => {
-      setNow(new Date());
-    }, msUntilNextMinute);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   return (

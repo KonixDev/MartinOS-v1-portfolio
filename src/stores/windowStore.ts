@@ -47,6 +47,7 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       isMaximized: false,
       isMinimized: false,
       zIndex: nextZIndex,
+      props: config.props,
     };
 
     set({

@@ -190,7 +190,7 @@ function PersonalizationPage() {
   );
 }
 
-// Wallpaper option component
+// Wallpaper option component with lazy loading
 function WallpaperOption({
   wallpaper,
   isSelected,
@@ -200,6 +200,8 @@ function WallpaperOption({
   isSelected: boolean;
   onClick: () => void;
 }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   return (
     <button
       onClick={onClick}
@@ -212,11 +214,27 @@ function WallpaperOption({
       )}
     >
       {wallpaper.url ? (
-        <img
-          src={wallpaper.url}
-          alt={wallpaper.name}
-          className="w-full h-full object-cover"
-        />
+        <>
+          {/* Loading placeholder */}
+          {!isLoaded && (
+            <div
+              className="absolute inset-0 flex items-center justify-center animate-pulse"
+              style={{ backgroundColor: wallpaper.color }}
+            >
+              <ImageFilled className="w-6 h-6 text-white/50" />
+            </div>
+          )}
+          <img
+            src={wallpaper.thumbnail || wallpaper.url}
+            alt={wallpaper.name}
+            loading="lazy"
+            onLoad={() => setIsLoaded(true)}
+            className={cn(
+              'w-full h-full object-cover transition-opacity duration-200',
+              isLoaded ? 'opacity-100' : 'opacity-0'
+            )}
+          />
+        </>
       ) : (
         <div
           className="w-full h-full flex items-center justify-center"

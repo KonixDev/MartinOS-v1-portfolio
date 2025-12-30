@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useWindowStore } from '@/stores/windowStore';
 import { APP_REGISTRY } from '@/constants';
+import { createFolder, createFile } from '@/lib/filesystem/operations';
 
 import 'react-contexify/ReactContexify.css';
 
@@ -63,6 +64,53 @@ export function DesktopContextMenu() {
   const handleOpenTerminal = () => {
     const app = APP_REGISTRY['terminal'];
     if (app) openWindow('terminal', app.name);
+  };
+
+  const handleNewFolder = async () => {
+    const name = prompt('Enter folder name:', 'New Folder');
+    if (!name) return;
+
+    const result = await createFolder('/Desktop', name);
+    if (result.success) {
+      // Open File Explorer to show the new folder
+      const app = APP_REGISTRY['file-explorer'];
+      if (app) {
+        openWindow('file-explorer', app.name, {
+          width: app.defaultSize.width,
+          height: app.defaultSize.height,
+          minWidth: app.minSize.width,
+          minHeight: app.minSize.height,
+          props: { initialPath: '/Desktop' },
+        });
+      }
+    } else {
+      alert(result.error || 'Failed to create folder');
+    }
+  };
+
+  const handleNewTextFile = async () => {
+    const name = prompt('Enter file name:', 'New Text Document.txt');
+    if (!name) return;
+
+    // Ensure it has .txt extension
+    const fileName = name.endsWith('.txt') ? name : `${name}.txt`;
+
+    const result = await createFile('/Desktop', fileName, '');
+    if (result.success) {
+      // Open the new file in Notepad
+      const app = APP_REGISTRY['notepad'];
+      if (app) {
+        openWindow('notepad', fileName, {
+          width: app.defaultSize.width,
+          height: app.defaultSize.height,
+          minWidth: app.minSize.width,
+          minHeight: app.minSize.height,
+          props: { filePath: `/Desktop/${fileName}` },
+        });
+      }
+    } else {
+      alert(result.error || 'Failed to create file');
+    }
   };
 
   return (
@@ -124,14 +172,14 @@ export function DesktopContextMenu() {
       <Submenu
         label={<MenuItem icon={<FolderPlus className="w-4 h-4" />} label="New" />}
       >
-        <Item onClick={() => console.log('New folder')}>
+        <Item onClick={handleNewFolder}>
           <MenuItem icon={<FolderPlus className="w-4 h-4" />} label="Folder" />
         </Item>
         <Item onClick={() => console.log('New shortcut')}>
           <MenuItem icon={<span />} label="Shortcut" />
         </Item>
         <Separator />
-        <Item onClick={() => console.log('New text file')}>
+        <Item onClick={handleNewTextFile}>
           <MenuItem icon={<FileText className="w-4 h-4" />} label="Text Document" />
         </Item>
       </Submenu>

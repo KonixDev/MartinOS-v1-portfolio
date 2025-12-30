@@ -1,10 +1,15 @@
 'use client';
 
 import { useCallback } from 'react';
+import { useContextMenu } from 'react-contexify';
 import { cn } from '@/lib/utils';
 import { useFileSystemStore, useWindowStore } from '@/stores';
 import { FileSystemItem } from '@/types';
 import { FileItem } from './FileItem';
+import { FileContextMenu, FILE_MENU_ID } from '@/components/context-menu/FileContextMenu';
+import { FolderContextMenu, FOLDER_MENU_ID } from '@/components/context-menu/FolderContextMenu';
+import { deleteItem, renameItem } from '@/lib/filesystem/operations';
+import { APP_REGISTRY } from '@/constants/apps';
 
 export function FileList() {
   const items = useFileSystemStore((state) => state.items);
@@ -12,8 +17,13 @@ export function FileList() {
   const selectItem = useFileSystemStore((state) => state.selectItem);
   const clearSelection = useFileSystemStore((state) => state.clearSelection);
   const navigateTo = useFileSystemStore((state) => state.navigateTo);
-  const openFile = useFileSystemStore((state) => state.openFile);
+  const currentPath = useFileSystemStore((state) => state.currentPath);
+  const refresh = useFileSystemStore((state) => state.refresh);
   const openWindow = useWindowStore((state) => state.openWindow);
+
+  // Context menu hooks
+  const { show: showFileMenu } = useContextMenu({ id: FILE_MENU_ID });
+  const { show: showFolderMenu } = useContextMenu({ id: FOLDER_MENU_ID });
 
   const handleClick = useCallback(
     (item: FileSystemItem, e: React.MouseEvent) => {
@@ -53,6 +63,140 @@ export function FileList() {
       }
     },
     [navigateTo, openWindow]
+  );
+
+  // Context menu handler for items
+  const handleContextMenu = useCallback(
+    (item: FileSystemItem, e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      selectItem(item.path, false);
+
+      if (item.type === 'folder') {
+        showFolderMenu({ event: e, props: { folderId: item.path } });
+      } else {
+        showFileMenu({ event: e, props: { fileId: item.path } });
+      }
+    },
+    [selectItem, showFileMenu, showFolderMenu]
+  );
+
+  // File context menu handlers
+  const handleFileOpen = useCallback(
+    async (filePath: string) => {
+      const item = items.find((i) => i.path === filePath);
+      if (item) {
+        const extension = item.name.split('.').pop()?.toLowerCase() || '';
+        if (['txt', 'md', 'json', 'js', 'ts', 'css', 'html'].includes(extension)) {
+          openWindow('notepad', item.name, {
+            width: 650,
+            height: 450,
+            minWidth: 300,
+            minHeight: 200,
+            props: { filePath: item.path },
+          });
+        } else if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'].includes(extension)) {
+          openWindow('image-viewer', item.name, {
+            width: 800,
+            height: 600,
+            minWidth: 400,
+            minHeight: 300,
+            props: { filePath: item.path },
+          });
+        }
+      }
+    },
+    [items, openWindow]
+  );
+
+  const handleFileDelete = useCallback(
+    async (filePath: string) => {
+      const item = items.find((i) => i.path === filePath);
+      if (item && confirm(`Are you sure you want to delete "${item.name}"?`)) {
+        const result = await deleteItem(filePath);
+        if (result.success) {
+          refresh();
+        } else {
+          alert(result.error || 'Failed to delete file');
+        }
+      }
+    },
+    [items, refresh]
+  );
+
+  const handleFileRename = useCallback(
+    async (filePath: string) => {
+      const item = items.find((i) => i.path === filePath);
+      if (item) {
+        const newName = prompt('Enter new name:', item.name);
+        if (newName && newName !== item.name) {
+          const result = await renameItem(filePath, newName);
+          if (result.success) {
+            refresh();
+          } else {
+            alert(result.error || 'Failed to rename');
+          }
+        }
+      }
+    },
+    [items, refresh]
+  );
+
+  // Folder context menu handlers
+  const handleFolderOpen = useCallback(
+    (folderPath: string) => {
+      navigateTo(folderPath);
+    },
+    [navigateTo]
+  );
+
+  const handleFolderOpenInNewWindow = useCallback(
+    (folderPath: string) => {
+      const app = APP_REGISTRY['file-explorer'];
+      if (app) {
+        openWindow('file-explorer', 'File Explorer', {
+          width: app.defaultSize.width,
+          height: app.defaultSize.height,
+          minWidth: app.minSize.width,
+          minHeight: app.minSize.height,
+          props: { initialPath: folderPath },
+        });
+      }
+    },
+    [openWindow]
+  );
+
+  const handleFolderDelete = useCallback(
+    async (folderPath: string) => {
+      const item = items.find((i) => i.path === folderPath);
+      if (item && confirm(`Are you sure you want to delete "${item.name}" and all its contents?`)) {
+        const result = await deleteItem(folderPath);
+        if (result.success) {
+          refresh();
+        } else {
+          alert(result.error || 'Failed to delete folder');
+        }
+      }
+    },
+    [items, refresh]
+  );
+
+  const handleFolderRename = useCallback(
+    async (folderPath: string) => {
+      const item = items.find((i) => i.path === folderPath);
+      if (item) {
+        const newName = prompt('Enter new name:', item.name);
+        if (newName && newName !== item.name) {
+          const result = await renameItem(folderPath, newName);
+          if (result.success) {
+            refresh();
+          } else {
+            alert(result.error || 'Failed to rename');
+          }
+        }
+      }
+    },
+    [items, refresh]
   );
 
   const handleContainerClick = () => {
@@ -96,8 +240,22 @@ export function FileList() {
           isSelected={selectedItems.includes(item.path)}
           onClick={(e) => handleClick(item, e)}
           onDoubleClick={() => handleDoubleClick(item)}
+          onContextMenu={(e) => handleContextMenu(item, e)}
         />
       ))}
+
+      {/* Context Menus */}
+      <FileContextMenu
+        onOpen={handleFileOpen}
+        onDelete={handleFileDelete}
+        onRename={handleFileRename}
+      />
+      <FolderContextMenu
+        onOpen={handleFolderOpen}
+        onOpenInNewWindow={handleFolderOpenInNewWindow}
+        onDelete={handleFolderDelete}
+        onRename={handleFolderRename}
+      />
     </div>
   );
 }

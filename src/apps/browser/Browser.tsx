@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { AppProps } from '@/types';
 import {
@@ -10,19 +10,45 @@ import {
   HomeFilled,
   LockClosedFilled,
   GlobeFilled,
+  ShieldFilled,
 } from '@fluentui/react-icons';
 
-// Sites that work well with iframes
+// CORS proxies for x-frame-bypass
+const CORS_PROXIES = [
+  'https://api.allorigins.win/raw?url=',
+  'https://corsproxy.io/?',
+  'https://api.codetabs.com/v1/proxy?quest=',
+];
+
+// Sites that work well with direct iframes (no bypass needed)
+// Note: Most sites need bypass due to X-Frame-Options headers
+const DIRECT_SITES = [
+  'wikipedia.org',
+  'archive.org',
+  'openstreetmap.org',
+];
+
+// Suggested sites for homepage
 const SUGGESTED_SITES = [
   { name: 'Wikipedia', url: 'https://www.wikipedia.org', icon: '📚', color: '#fff' },
   { name: 'DuckDuckGo', url: 'https://lite.duckduckgo.com/lite/', icon: '🦆', color: '#de5833' },
-  { name: 'Archive.org', url: 'https://archive.org', icon: '📦', color: '#428bca' },
-  { name: 'OpenStreetMap', url: 'https://www.openstreetmap.org/export/embed.html', icon: '🗺️', color: '#7ebc6f' },
+  { name: 'GitHub', url: 'https://github.com', icon: '🐙', color: '#333' },
+  { name: 'YouTube', url: 'https://www.youtube.com', icon: '▶️', color: '#ff0000' },
   { name: 'Hacker News', url: 'https://news.ycombinator.com', icon: '📰', color: '#ff6600' },
-  { name: 'Reddit (old)', url: 'https://old.reddit.com', icon: '🔴', color: '#ff4500' },
+  { name: 'Reddit', url: 'https://www.reddit.com', icon: '🔴', color: '#ff4500' },
 ];
 
 const HOME_URL = 'about:home';
+
+// Check if URL can use direct iframe
+const canUseDirectIframe = (url: string): boolean => {
+  try {
+    const urlObj = new URL(url);
+    return DIRECT_SITES.some(site => urlObj.hostname.includes(site));
+  } catch {
+    return false;
+  }
+};
 
 export function Browser({ windowId }: AppProps) {
   const [url, setUrl] = useState(HOME_URL);
@@ -30,10 +56,34 @@ export function Browser({ windowId }: AppProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [history, setHistory] = useState<string[]>([HOME_URL]);
   const [historyIndex, setHistoryIndex] = useState(0);
+  const [srcdoc, setSrcdoc] = useState<string | null>(null);
+  const [useBypass, setUseBypass] = useState(true); // Enable bypass by default
+  const [loadError, setLoadError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const isHomePage = url === HOME_URL;
+  const shouldBypass = useBypass && !canUseDirectIframe(url);
 
+  // Fetch content via CORS proxy
+  const fetchViaProxy = useCallback(async (targetUrl: string, proxyIndex = 0): Promise<string> => {
+    if (proxyIndex >= CORS_PROXIES.length) {
+      throw new Error('All proxies failed');
+    }
+
+    const proxy = CORS_PROXIES[proxyIndex];
+    try {
+      const response = await fetch(proxy + encodeURIComponent(targetUrl));
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      return await response.text();
+    } catch (error) {
+      console.warn(`Proxy ${proxyIndex} failed:`, error);
+      return fetchViaProxy(targetUrl, proxyIndex + 1);
+    }
+  }, []);
+
+  // Navigate function - defined early so it can be used in useEffect
   const navigate = useCallback((newUrl: string, addToHistory = true) => {
     let finalUrl = newUrl;
 
@@ -69,6 +119,132 @@ export function Browser({ windowId }: AppProps) {
     }
   }, [historyIndex]);
 
+  // Load page content via bypass
+  const loadBypassContent = useCallback(async (targetUrl: string) => {
+    if (!targetUrl || targetUrl === HOME_URL || !targetUrl.startsWith('http')) {
+      setSrcdoc(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setLoadError(null);
+
+    // Show loading animation
+    setSrcdoc(`
+      <html>
+        <head>
+          <style>
+            body { display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f5f5f5; font-family: system-ui, sans-serif; }
+            .loader { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top-color: #0078d4; border-radius: 50%; animation: spin 1s linear infinite; }
+            @keyframes spin { to { transform: rotate(360deg); } }
+            .dark body { background: #1a1a1a; }
+            .dark .loader { border-color: #333; border-top-color: #0078d4; }
+          </style>
+        </head>
+        <body><div class="loader"></div></body>
+      </html>
+    `);
+
+    try {
+      const html = await fetchViaProxy(targetUrl);
+
+      // Inject base tag and navigation handlers (x-frame-bypass approach)
+      const modifiedHtml = html.replace(
+        /<head([^>]*)>/i,
+        `<head$1>
+          <base href="${targetUrl}">
+          <style>
+            /* Ensure links are clickable */
+            a { cursor: pointer; }
+          </style>
+          <script>
+            // X-Frame-Bypass navigation handlers using document.activeElement
+            // This is more reliable than e.target.closest('a') for complex sites
+            document.addEventListener('click', function(e) {
+              var activeEl = document.activeElement;
+              if (activeEl && activeEl.href) {
+                e.preventDefault();
+                window.parent.postMessage({ type: 'navigate', url: activeEl.href }, '*');
+              }
+            }, true);
+
+            // Fallback: mousedown captures links before focus changes
+            document.addEventListener('mousedown', function(e) {
+              var link = e.target;
+              while (link && link.tagName !== 'A') {
+                link = link.parentElement;
+              }
+              if (link && link.href && !link.href.startsWith('javascript:')) {
+                // Store for click handler backup
+                window.__xfb_link = link.href;
+              } else {
+                window.__xfb_link = null;
+              }
+            }, true);
+
+            // Additional click handler as backup
+            document.addEventListener('click', function(e) {
+              if (window.__xfb_link) {
+                e.preventDefault();
+                window.parent.postMessage({ type: 'navigate', url: window.__xfb_link }, '*');
+                window.__xfb_link = null;
+              }
+            }, false);
+
+            // Handle form submissions
+            document.addEventListener('submit', function(e) {
+              var form = e.target;
+              if (form && form.action) {
+                e.preventDefault();
+                var url = form.action;
+                if (form.method && form.method.toLowerCase() === 'post') {
+                  // For POST forms, we still need to handle via GET (proxy limitation)
+                  var formData = new FormData(form);
+                  var params = new URLSearchParams(formData).toString();
+                  url = url + (url.includes('?') ? '&' : '?') + params;
+                } else {
+                  var formData = new FormData(form);
+                  var params = new URLSearchParams(formData).toString();
+                  url = url + (url.includes('?') ? '&' : '?') + params;
+                }
+                window.parent.postMessage({ type: 'navigate', url: url }, '*');
+              }
+            }, true);
+          </script>`
+      );
+
+      setSrcdoc(modifiedHtml);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Failed to load page:', error);
+      setLoadError('Failed to load page. The website may not be accessible via proxy.');
+      setSrcdoc(null);
+      setIsLoading(false);
+    }
+  }, [fetchViaProxy]);
+
+  // Listen for navigation messages from iframe
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'navigate' && event.data?.url) {
+        navigate(event.data.url);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [navigate]);
+
+  // Load content when URL changes (bypass mode)
+  useEffect(() => {
+    if (shouldBypass && url !== HOME_URL && url.startsWith('http')) {
+      loadBypassContent(url);
+    } else {
+      setSrcdoc(null);
+      setLoadError(null);
+    }
+  }, [url, shouldBypass, loadBypassContent]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputUrl.trim()) {
@@ -77,9 +253,13 @@ export function Browser({ windowId }: AppProps) {
   };
 
   const handleRefresh = () => {
-    if (iframeRef.current && !isHomePage) {
-      setIsLoading(true);
-      iframeRef.current.src = url;
+    if (!isHomePage) {
+      if (shouldBypass) {
+        loadBypassContent(url);
+      } else if (iframeRef.current) {
+        setIsLoading(true);
+        iframeRef.current.src = url;
+      }
     }
   };
 
@@ -151,6 +331,20 @@ export function Browser({ windowId }: AppProps) {
             onClick={handleHome}
             title="Home"
           />
+          {/* Bypass toggle */}
+          <button
+            onClick={() => setUseBypass(!useBypass)}
+            title={useBypass ? 'Proxy Mode: ON (click to disable)' : 'Proxy Mode: OFF (click to enable)'}
+            className={cn(
+              'w-8 h-8 flex items-center justify-center rounded-full ml-1',
+              'transition-colors duration-100',
+              useBypass
+                ? 'bg-win-accent/20 text-win-accent'
+                : 'hover:bg-black/5 dark:hover:bg-white/10 text-win-text-secondary'
+            )}
+          >
+            <ShieldFilled className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Address Bar */}
@@ -195,19 +389,53 @@ export function Browser({ windowId }: AppProps) {
 
         {/* Home Page */}
         {isHomePage ? (
-          <HomePage onNavigate={navigate} />
+          <HomePage onNavigate={navigate} useBypass={useBypass} />
+        ) : loadError ? (
+          /* Error State */
+          <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+            <div className="w-16 h-16 mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <span className="text-3xl">😕</span>
+            </div>
+            <h2 className="text-lg font-semibold text-win-text-primary dark:text-win-dark-text-primary mb-2">
+              Unable to Load Page
+            </h2>
+            <p className="text-sm text-win-text-secondary dark:text-win-dark-text-secondary max-w-md mb-4">
+              {loadError}
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleRefresh()}
+                className="px-4 py-2 text-sm bg-win-accent text-white rounded-md hover:bg-win-accent/90"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={() => setUseBypass(!useBypass)}
+                className="px-4 py-2 text-sm border border-win-border dark:border-win-dark-border rounded-md hover:bg-black/5 dark:hover:bg-white/10"
+              >
+                {useBypass ? 'Try Direct Mode' : 'Try Proxy Mode'}
+              </button>
+            </div>
+          </div>
+        ) : shouldBypass && srcdoc ? (
+          /* Bypass iframe with srcdoc */
+          <iframe
+            ref={iframeRef}
+            srcDoc={srcdoc}
+            className="w-full h-full border-none"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+            title="Browser (Proxy)"
+          />
         ) : (
-          <>
-            {/* Iframe */}
-            <iframe
-              ref={iframeRef}
-              src={url}
-              className="w-full h-full border-none"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-              onLoad={handleIframeLoad}
-              title="Browser"
-            />
-          </>
+          /* Direct iframe */
+          <iframe
+            ref={iframeRef}
+            src={url}
+            className="w-full h-full border-none"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            onLoad={handleIframeLoad}
+            title="Browser"
+          />
         )}
       </div>
     </div>
@@ -215,7 +443,7 @@ export function Browser({ windowId }: AppProps) {
 }
 
 // Home Page Component
-function HomePage({ onNavigate }: { onNavigate: (url: string) => void }) {
+function HomePage({ onNavigate, useBypass }: { onNavigate: (url: string) => void; useBypass: boolean }) {
   return (
     <div className="h-full flex flex-col items-center justify-center p-8 bg-gradient-to-b from-win-bg-secondary to-win-bg-primary dark:from-win-dark-bg-secondary dark:to-win-dark-bg-primary">
       {/* Logo */}
@@ -227,14 +455,14 @@ function HomePage({ onNavigate }: { onNavigate: (url: string) => void }) {
           MartinOS Browser
         </h1>
         <p className="text-sm text-win-text-secondary dark:text-win-dark-text-secondary mt-1">
-          Explore iframe-compatible websites
+          Browse the web with proxy bypass
         </p>
       </div>
 
       {/* Suggested Sites */}
       <div className="w-full max-w-2xl">
         <h2 className="text-sm font-medium text-win-text-secondary dark:text-win-dark-text-secondary mb-4 text-center">
-          Suggested Sites
+          Popular Sites
         </h2>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
           {SUGGESTED_SITES.map((site) => (
@@ -262,17 +490,29 @@ function HomePage({ onNavigate }: { onNavigate: (url: string) => void }) {
         </div>
       </div>
 
-      {/* Info Notice */}
+      {/* Proxy Mode Status */}
       <div
         className={cn(
           'mt-8 p-3 rounded-lg max-w-md',
-          'bg-amber-50 dark:bg-amber-900/20',
-          'border border-amber-200 dark:border-amber-800',
-          'text-xs text-amber-800 dark:text-amber-200 text-center'
+          useBypass
+            ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+            : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800'
         )}
       >
-        <strong>Note:</strong> Some websites block iframe embedding.
-        The sites above are known to work well.
+        <div className="flex items-center gap-2 justify-center">
+          <ShieldFilled className={cn(
+            'w-4 h-4',
+            useBypass ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400'
+          )} />
+          <span className={cn(
+            'text-xs',
+            useBypass ? 'text-green-800 dark:text-green-200' : 'text-amber-800 dark:text-amber-200'
+          )}>
+            {useBypass
+              ? 'Proxy Mode is ON — Most websites will load via CORS proxy'
+              : 'Proxy Mode is OFF — Only iframe-friendly sites will work'}
+          </span>
+        </div>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ interface FileItemProps {
   isSelected: boolean;
   onClick: (e: React.MouseEvent) => void;
   onDoubleClick: () => void;
+  onContextMenu: (e: React.MouseEvent) => void;
 }
 
 function getFileIcon(item: FileSystemItem) {
@@ -65,11 +66,13 @@ export function FileItem({
   isSelected,
   onClick,
   onDoubleClick,
+  onContextMenu,
 }: FileItemProps) {
   return (
     <button
       onClick={onClick}
       onDoubleClick={onDoubleClick}
+      onContextMenu={onContextMenu}
       className={cn(
         'flex flex-col items-center gap-1 p-2 rounded',
         'transition-colors duration-100 outline-none',
