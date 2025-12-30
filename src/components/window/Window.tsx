@@ -13,6 +13,7 @@ import { TASKBAR_HEIGHT } from '@/constants';
 type SnapZone = 'left' | 'right' | 'top' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | null;
 
 const SNAP_THRESHOLD = 20; // pixels from edge to trigger snap
+const MOBILE_BREAKPOINT = 768; // matches Tailwind's 'md'
 
 interface WindowProps {
   id: string;
@@ -39,7 +40,7 @@ export function Window({
   width,
   height,
   minWidth = 400,
-  minHeight = 300,
+  minHeight = 100,
   isMinimized,
   isMaximized,
   zIndex,
@@ -61,22 +62,30 @@ export function Window({
   const [isSnapped, setIsSnapped] = useState(false);
   const [preSnapState, setPreSnapState] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const [screenSize, setScreenSize] = useState({ width: 1920, height: 1080 });
+  const [isMobile, setIsMobile] = useState(false);
 
   const isFocused = activeWindowId === id;
 
-  // Track screen size for maximized windows
+  // Track screen size and mobile state for responsive windows
   useEffect(() => {
     const updateScreenSize = () => {
-      setScreenSize({
-        width: window.innerWidth,
-        height: window.innerHeight - TASKBAR_HEIGHT,
-      });
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight - TASKBAR_HEIGHT;
+      const newIsMobile = newWidth < MOBILE_BREAKPOINT;
+
+      setScreenSize({ width: newWidth, height: newHeight });
+      setIsMobile(newIsMobile);
+
+      // Auto-maximize when resizing to mobile viewport
+      if (newIsMobile && !isMaximized) {
+        maximizeWindow(id);
+      }
     };
 
     updateScreenSize();
     window.addEventListener('resize', updateScreenSize);
     return () => window.removeEventListener('resize', updateScreenSize);
-  }, []);
+  }, [id, isMaximized, maximizeWindow]);
 
   // Detect snap zone based on mouse position
   const detectSnapZone = useCallback((mouseX: number, mouseY: number): SnapZone => {
@@ -308,6 +317,7 @@ export function Window({
                   icon={icon}
                   isMaximized={isMaximized || isSnapped}
                   isFocused={isFocused}
+                  isMobile={isMobile}
                   onMinimize={handleMinimize}
                   onMaximize={handleMaximizeToggle}
                   onClose={handleClose}

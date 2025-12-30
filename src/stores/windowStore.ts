@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { WindowState } from '@/types';
 
+// Mobile breakpoint (matches Tailwind's 'md')
+const MOBILE_BREAKPOINT = 768;
+const TASKBAR_HEIGHT = 48;
+
 interface WindowStore {
   windows: WindowState[];
   activeWindowId: string | null;
@@ -19,6 +23,12 @@ interface WindowStore {
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
+// Check if viewport is mobile
+const isMobileViewport = () => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < MOBILE_BREAKPOINT;
+};
+
 export const useWindowStore = create<WindowStore>((set, get) => ({
   windows: [],
   activeWindowId: null,
@@ -27,12 +37,43 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
   openWindow: (appId, title, config = {}) => {
     const id = generateId();
     const { nextZIndex, windows } = get();
-    
-    // Center the window by default
-    const defaultWidth = config.width ?? 800;
-    const defaultHeight = config.height ?? 600;
-    const x = config.x ?? Math.max(50, (window.innerWidth - defaultWidth) / 2);
-    const y = config.y ?? Math.max(50, (window.innerHeight - defaultHeight - 48) / 2);
+
+    const isMobile = isMobileViewport();
+    const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const screenHeight = typeof window !== 'undefined' ? window.innerHeight - TASKBAR_HEIGHT : 1080;
+
+    // On mobile, auto-maximize windows
+    if (isMobile) {
+      const newWindow: WindowState = {
+        id,
+        appId,
+        title,
+        x: 0,
+        y: 0,
+        width: screenWidth,
+        height: screenHeight,
+        minWidth: config.minWidth ?? 280,
+        minHeight: config.minHeight ?? 200,
+        isMaximized: true,
+        isMinimized: false,
+        zIndex: nextZIndex,
+        props: config.props,
+      };
+
+      set({
+        windows: [...windows, newWindow],
+        activeWindowId: id,
+        nextZIndex: nextZIndex + 1,
+      });
+
+      return id;
+    }
+
+    // Desktop: Center the window, constrain to viewport
+    const defaultWidth = Math.min(config.width ?? 800, screenWidth - 100);
+    const defaultHeight = Math.min(config.height ?? 600, screenHeight - 100);
+    const x = config.x ?? Math.max(50, (screenWidth - defaultWidth) / 2);
+    const y = config.y ?? Math.max(50, (screenHeight - defaultHeight) / 2);
 
     const newWindow: WindowState = {
       id,

@@ -16,7 +16,8 @@ import {
 // CORS proxies for x-frame-bypass
 const CORS_PROXIES = [
   'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
+  //'https://corsproxy.io/?',
+  'https://cors.io/?',
   'https://api.codetabs.com/v1/proxy?quest=',
 ];
 
@@ -298,36 +299,36 @@ export function Browser({ windowId }: AppProps) {
   const isSecure = url.startsWith('https://');
 
   return (
-    <div className={cn('flex flex-col h-full', 'bg-win-window-bg dark:bg-win-dark-window-bg')}>
-      {/* Navigation Bar */}
+    <div className={cn('flex flex-col h-full w-full', 'bg-win-window-bg dark:bg-win-dark-window-bg')}>
+      {/* Navigation Bar - Compact for mobile */}
       <div
         className={cn(
-          'flex items-center gap-2 px-2 py-1.5',
+          'flex items-center gap-0.5 md:gap-1 px-1 py-0.5 md:py-1 shrink-0',
           'border-b border-win-border dark:border-win-dark-border',
           'bg-win-bg-secondary dark:bg-win-dark-bg-secondary'
         )}
       >
-        {/* Navigation Buttons */}
-        <div className="flex items-center gap-0.5">
+        {/* Navigation Buttons - Very compact on mobile */}
+        <div className="flex items-center shrink-0">
           <NavButton
-            icon={<ArrowLeftFilled className="w-4 h-4" />}
+            icon={<ArrowLeftFilled className="w-3 h-3 md:w-4 md:h-4" />}
             onClick={handleBack}
             disabled={!canGoBack}
             title="Back"
           />
           <NavButton
-            icon={<ArrowRightFilled className="w-4 h-4" />}
+            icon={<ArrowRightFilled className="w-3 h-3 md:w-4 md:h-4" />}
             onClick={handleForward}
             disabled={!canGoForward}
             title="Forward"
           />
           <NavButton
-            icon={<ArrowClockwiseFilled className="w-4 h-4" />}
+            icon={<ArrowClockwiseFilled className="w-3 h-3 md:w-4 md:h-4" />}
             onClick={handleRefresh}
             title="Refresh"
           />
           <NavButton
-            icon={<HomeFilled className="w-4 h-4" />}
+            icon={<HomeFilled className="w-3 h-3 md:w-4 md:h-4" />}
             onClick={handleHome}
             title="Home"
           />
@@ -336,31 +337,31 @@ export function Browser({ windowId }: AppProps) {
             onClick={() => setUseBypass(!useBypass)}
             title={useBypass ? 'Proxy Mode: ON (click to disable)' : 'Proxy Mode: OFF (click to enable)'}
             className={cn(
-              'w-8 h-8 flex items-center justify-center rounded-full ml-1',
+              'w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full shrink-0',
               'transition-colors duration-100',
               useBypass
                 ? 'bg-win-accent/20 text-win-accent'
                 : 'hover:bg-black/5 dark:hover:bg-white/10 text-win-text-secondary'
             )}
           >
-            <ShieldFilled className="w-4 h-4" />
+            <ShieldFilled className="w-3 h-3 md:w-4 md:h-4" />
           </button>
         </div>
 
         {/* Address Bar */}
-        <form onSubmit={handleSubmit} className="flex-1">
+        <form onSubmit={handleSubmit} className="flex-1 min-w-0">
           <div
             className={cn(
-              'flex items-center h-8 rounded-full px-3',
+              'flex items-center h-7 md:h-8 rounded-full px-2 md:px-3',
               'bg-win-window-bg dark:bg-win-dark-window-bg',
               'border border-win-border dark:border-win-dark-border',
               'focus-within:ring-2 focus-within:ring-win-accent'
             )}
           >
-            {/* Security indicator */}
+            {/* Security indicator - Hidden on mobile */}
             <LockClosedFilled
               className={cn(
-                'w-3 h-3 mr-2 flex-shrink-0',
+                'w-3 h-3 mr-2 shrink-0 hidden md:block',
                 isSecure ? 'text-green-600' : 'text-gray-400'
               )}
             />
@@ -370,21 +371,21 @@ export function Browser({ windowId }: AppProps) {
               value={inputUrl}
               onChange={(e) => setInputUrl(e.target.value)}
               className={cn(
-                'flex-1 bg-transparent outline-none text-sm',
+                'flex-1 min-w-0 bg-transparent outline-none text-[11px] md:text-sm',
                 'text-win-text-primary dark:text-win-dark-text-primary',
                 'placeholder:text-win-text-secondary'
               )}
-              placeholder="Search or enter web address"
+              placeholder="Search or enter URL"
             />
           </div>
         </form>
       </div>
 
       {/* Browser Content */}
-      <div className="flex-1 relative bg-win-window-bg dark:bg-win-dark-window-bg overflow-hidden">
+      <div className="flex-1 relative bg-win-window-bg dark:bg-win-dark-window-bg overflow-auto">
         {/* Loading indicator */}
         {isLoading && (
-          <div className="absolute top-0 left-0 right-0 h-0.5 bg-win-accent animate-pulse z-10" />
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-win-accent animate-pulse" />
         )}
 
         {/* Home Page */}
@@ -392,7 +393,7 @@ export function Browser({ windowId }: AppProps) {
           <HomePage onNavigate={navigate} useBypass={useBypass} />
         ) : loadError ? (
           /* Error State */
-          <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+          <div className="h-full w-full flex flex-col items-center justify-center p-4 md:p-8 text-center">
             <div className="w-16 h-16 mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
               <span className="text-3xl">😕</span>
             </div>
@@ -442,47 +443,47 @@ export function Browser({ windowId }: AppProps) {
   );
 }
 
-// Home Page Component
+// Home Page Component - Responsive
 function HomePage({ onNavigate, useBypass }: { onNavigate: (url: string) => void; useBypass: boolean }) {
   return (
-    <div className="h-full flex flex-col items-center justify-center p-8 bg-gradient-to-b from-win-bg-secondary to-win-bg-primary dark:from-win-dark-bg-secondary dark:to-win-dark-bg-primary">
-      {/* Logo */}
-      <div className="mb-8 text-center">
-        <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-win-accent flex items-center justify-center">
-          <GlobeFilled className="w-10 h-10 text-white" />
+    <div className="h-full w-full flex flex-col items-center justify-center p-4 md:p-6 overflow-y-auto bg-gradient-to-b from-win-bg-secondary to-win-bg-primary dark:from-win-dark-bg-secondary dark:to-win-dark-bg-primary">
+      {/* Logo - Smaller on mobile */}
+      <div className="mb-4 md:mb-6 text-center">
+        <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-2 md:mb-3 rounded-full bg-win-accent flex items-center justify-center">
+          <GlobeFilled className="w-6 h-6 md:w-8 md:h-8 text-white" />
         </div>
-        <h1 className="text-2xl font-semibold text-win-text-primary dark:text-win-dark-text-primary">
+        <h1 className="text-base md:text-xl font-semibold text-win-text-primary dark:text-win-dark-text-primary">
           MartinOS Browser
         </h1>
-        <p className="text-sm text-win-text-secondary dark:text-win-dark-text-secondary mt-1">
+        <p className="text-[10px] md:text-xs text-win-text-secondary dark:text-win-dark-text-secondary mt-0.5">
           Browse the web with proxy bypass
         </p>
       </div>
 
-      {/* Suggested Sites */}
-      <div className="w-full max-w-2xl">
-        <h2 className="text-sm font-medium text-win-text-secondary dark:text-win-dark-text-secondary mb-4 text-center">
+      {/* Suggested Sites - 2 columns on mobile, 6 on desktop */}
+      <div className="w-full max-w-[280px] md:max-w-2xl">
+        <h2 className="text-[10px] md:text-xs font-medium text-win-text-secondary dark:text-win-dark-text-secondary mb-2 md:mb-3 text-center">
           Popular Sites
         </h2>
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-3">
           {SUGGESTED_SITES.map((site) => (
             <button
               key={site.name}
               onClick={() => onNavigate(site.url)}
               className={cn(
-                'flex flex-col items-center gap-2 p-3 rounded-lg',
+                'flex flex-col items-center gap-1 p-1.5 md:p-2 rounded-lg',
                 'transition-all duration-150',
                 'hover:bg-black/5 dark:hover:bg-white/10',
-                'active:scale-95'
+                'active:scale-95 active:bg-black/10 dark:active:bg-white/20'
               )}
             >
               <div
-                className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
+                className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center text-lg md:text-xl"
                 style={{ backgroundColor: site.color + '20' }}
               >
                 {site.icon}
               </div>
-              <span className="text-xs text-win-text-primary dark:text-win-dark-text-primary text-center truncate w-full">
+              <span className="text-[9px] md:text-[11px] text-win-text-primary dark:text-win-dark-text-primary text-center truncate w-full">
                 {site.name}
               </span>
             </button>
@@ -490,27 +491,27 @@ function HomePage({ onNavigate, useBypass }: { onNavigate: (url: string) => void
         </div>
       </div>
 
-      {/* Proxy Mode Status */}
+      {/* Proxy Mode Status - More compact on mobile */}
       <div
         className={cn(
-          'mt-8 p-3 rounded-lg max-w-md',
+          'mt-3 md:mt-6 p-1.5 md:p-2 rounded-lg w-full max-w-xs md:max-w-md',
           useBypass
             ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
             : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800'
         )}
       >
-        <div className="flex items-center gap-2 justify-center">
+        <div className="flex items-center gap-1.5 justify-center">
           <ShieldFilled className={cn(
-            'w-4 h-4',
+            'w-3 h-3 md:w-4 md:h-4 shrink-0',
             useBypass ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400'
           )} />
           <span className={cn(
-            'text-xs',
+            'text-[8px] md:text-[10px] leading-tight',
             useBypass ? 'text-green-800 dark:text-green-200' : 'text-amber-800 dark:text-amber-200'
           )}>
             {useBypass
-              ? 'Proxy Mode is ON — Most websites will load via CORS proxy'
-              : 'Proxy Mode is OFF — Only iframe-friendly sites will work'}
+              ? 'Proxy ON — Sites load via CORS proxy'
+              : 'Proxy OFF — Only iframe-friendly sites work'}
           </span>
         </div>
       </div>
@@ -532,11 +533,12 @@ function NavButton({ icon, onClick, disabled, title }: NavButtonProps) {
       disabled={disabled}
       title={title}
       className={cn(
-        'w-8 h-8 flex items-center justify-center rounded-full',
+        // Touch-friendly size (28px mobile, 32px desktop) - smaller on mobile to save space
+        'w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full shrink-0',
         'transition-colors duration-100',
         disabled
           ? 'opacity-40 cursor-not-allowed'
-          : 'hover:bg-black/5 dark:hover:bg-white/10 active:bg-black/10'
+          : 'hover:bg-black/5 dark:hover:bg-white/10 active:bg-black/10 dark:active:bg-white/20'
       )}
     >
       {icon}

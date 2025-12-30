@@ -68,7 +68,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: createIcon(SettingsFilled, '#6B6B6B'),
     component: Settings as ComponentType<AppProps>,
     defaultSize: { width: 1000, height: 700 },
-    minSize: { width: 750, height: 500 },
+    minSize: { width: 150, height: 500 },
     singleton: true,
   },
   browser: {
@@ -77,7 +77,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: createIcon(GlobeFilled, '#0078D4'),
     component: Browser as ComponentType<AppProps>,
     defaultSize: { width: 1200, height: 800 },
-    minSize: { width: 600, height: 400 },
+    minSize: { width: 100, height: 400 },
   },
   terminal: {
     id: 'terminal',
