@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useState, useEffect } from 'react';
 import { Rnd, DraggableData } from 'react-rnd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -17,7 +17,7 @@ const SNAP_THRESHOLD = 20; // pixels from edge to trigger snap
 interface WindowProps {
   id: string;
   title: string;
-  icon?: string;
+  icon?: string | ReactNode;
   x: number;
   y: number;
   width: number;
@@ -60,8 +60,23 @@ export function Window({
   const [snapZone, setSnapZone] = useState<SnapZone>(null);
   const [isSnapped, setIsSnapped] = useState(false);
   const [preSnapState, setPreSnapState] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  const [screenSize, setScreenSize] = useState({ width: 1920, height: 1080 });
 
   const isFocused = activeWindowId === id;
+
+  // Track screen size for maximized windows
+  useEffect(() => {
+    const updateScreenSize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight - TASKBAR_HEIGHT,
+      });
+    };
+
+    updateScreenSize();
+    window.addEventListener('resize', updateScreenSize);
+    return () => window.removeEventListener('resize', updateScreenSize);
+  }, []);
 
   // Detect snap zone based on mouse position
   const detectSnapZone = useCallback((mouseX: number, mouseY: number): SnapZone => {
@@ -218,7 +233,7 @@ export function Window({
 
   const windowPosition = isMaximized ? { x: 0, y: 0 } : { x, y };
   const windowSize = isMaximized
-    ? { width: '100%', height: `calc(100vh - ${TASKBAR_HEIGHT}px)` }
+    ? { width: screenSize.width, height: screenSize.height }
     : { width, height };
 
   const snapPreview = snapZone ? getSnapDimensions(snapZone) : null;
@@ -261,7 +276,7 @@ export function Window({
             onDragStop={handleDragStop}
             onResizeStop={handleResizeStop}
             onMouseDown={handleFocus}
-            style={{ zIndex }}
+            style={{ zIndex, pointerEvents: 'auto' }}
             resizeHandleStyles={{
               top: { cursor: 'n-resize' },
               right: { cursor: 'e-resize' },

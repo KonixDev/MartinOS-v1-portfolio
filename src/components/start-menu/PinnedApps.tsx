@@ -45,15 +45,19 @@ export function PinnedApps({ searchQuery = '', onAppClick }: PinnedAppsProps) {
           >
             {/* App Icon */}
             <div className="w-8 h-8 flex items-center justify-center">
-              {app.icon.startsWith('/') ? (
-                <img
-                  src={app.icon}
-                  alt=""
-                  className="w-8 h-8 object-contain"
-                  draggable={false}
-                />
+              {typeof app.icon === 'string' ? (
+                app.icon.startsWith('/') ? (
+                  <img
+                    src={app.icon}
+                    alt=""
+                    className="w-8 h-8 object-contain"
+                    draggable={false}
+                  />
+                ) : (
+                  <span className="text-2xl">{app.icon}</span>
+                )
               ) : (
-                <span className="text-2xl">{app.icon}</span>
+                app.icon
               )}
             </div>
 

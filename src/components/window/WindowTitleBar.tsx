@@ -1,11 +1,12 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { WindowControls } from './WindowControls';
 
 interface WindowTitleBarProps {
   title: string;
-  icon?: string;
+  icon?: string | ReactNode;
   isMaximized: boolean;
   isFocused: boolean;
   onMinimize: () => void;
@@ -37,12 +38,18 @@ export function WindowTitleBar({
       {/* Left side - Icon and Title */}
       <div className="flex items-center gap-2 px-3 flex-1 min-w-0">
         {icon && (
-          <img
-            src={icon}
-            alt=""
-            className="w-4 h-4 flex-shrink-0"
-            draggable={false}
-          />
+          <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+            {typeof icon === 'string' ? (
+              <img
+                src={icon}
+                alt=""
+                className="w-4 h-4"
+                draggable={false}
+              />
+            ) : (
+              icon
+            )}
+          </div>
         )}
         <span
           className={cn(

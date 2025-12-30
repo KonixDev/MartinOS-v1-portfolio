@@ -16,7 +16,7 @@ export function TaskbarApps() {
   const taskbarItems = useMemo(() => {
     const items: Array<{
       appId: string;
-      icon: string;
+      icon: string | React.ReactNode;
       name: string;
       isPinned: boolean;
       windowIds: string[];

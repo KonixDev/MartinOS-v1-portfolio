@@ -8,7 +8,7 @@ export interface AppProps {
 export interface AppConfig {
   id: string;
   name: string;
-  icon: string;
+  icon: string | React.ReactNode;
   component: ComponentType<AppProps>;
   defaultSize: { width: number; height: number };
   minSize: { width: number; height: number };

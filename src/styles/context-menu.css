@@ -6,38 +6,134 @@
   --contexify-menu-borderRadius: 8px;
   --contexify-menu-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
 
-  --contexify-item-color: var(--win-text-primary);
-  --contexify-activeItem-color: var(--win-text-primary);
-  --contexify-activeItem-bgColor: rgba(255, 255, 255, 0.08);
-  --contexify-rightSlot-color: var(--win-text-secondary);
+  --contexify-item-color: #1a1a1a;
+  --contexify-activeItem-color: #1a1a1a;
+  --contexify-activeItem-bgColor: rgba(0, 0, 0, 0.04);
+  --contexify-rightSlot-color: #5d5d5d;
 
-  --contexify-separator-color: var(--win-border);
-  --contexify-arrow-color: var(--win-text-secondary);
+  --contexify-separator-color: rgba(0, 0, 0, 0.08);
+  --contexify-arrow-color: #5d5d5d;
+
+  /* Override default menu styles */
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  padding: 4px !important;
+  min-width: 200px !important;
 }
 
+/* Menu item content */
 .react-contexify__item__content {
   padding: 6px 12px;
   font-size: 12px;
   border-radius: 4px;
+  margin: 1px 0;
 }
 
+.react-contexify__item:not(.react-contexify__item--disabled):hover > .react-contexify__item__content {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.react-contexify__item:not(.react-contexify__item--disabled):active > .react-contexify__item__content {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Separator */
 .react-contexify__separator {
   margin: 4px 8px;
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
+/* Submenu */
 .react-contexify__submenu {
-  top: -4px;
-  margin-left: 4px;
+  top: -5px;
+  margin-left: 2px;
+}
+
+/* Submenu popup - same styling as main menu */
+.react-contexify__submenu > .react-contexify {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  padding: 4px !important;
+}
+
+/* Arrow icon for submenus */
+.react-contexify__submenu-arrow {
+  margin-left: auto;
+  font-size: 10px;
+  color: #5d5d5d;
 }
 
 /* Dark theme support */
-:root.dark .react-contexify {
-  --contexify-item-color: var(--win-dark-text-primary);
-  --contexify-activeItem-color: var(--win-dark-text-primary);
-  --contexify-activeItem-bgColor: rgba(255, 255, 255, 0.1);
-  --contexify-rightSlot-color: var(--win-dark-text-secondary);
-  --contexify-separator-color: var(--win-dark-border);
-  --contexify-arrow-color: var(--win-dark-text-secondary);
+@media (prefers-color-scheme: dark) {
+  .react-contexify {
+    --contexify-item-color: #ffffff;
+    --contexify-activeItem-color: #ffffff;
+    --contexify-activeItem-bgColor: rgba(255, 255, 255, 0.08);
+    --contexify-rightSlot-color: #9d9d9d;
+    --contexify-separator-color: rgba(255, 255, 255, 0.1);
+    --contexify-arrow-color: #9d9d9d;
+
+    background: rgba(45, 45, 45, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .react-contexify__item:not(.react-contexify__item--disabled):hover > .react-contexify__item__content {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .react-contexify__item:not(.react-contexify__item--disabled):active > .react-contexify__item__content {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .react-contexify__separator {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .react-contexify__submenu > .react-contexify {
+    background: rgba(45, 45, 45, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .react-contexify__submenu-arrow {
+    color: #9d9d9d;
+  }
+}
+
+/* Force dark theme when body has dark class */
+body.dark .react-contexify,
+.dark .react-contexify {
+  --contexify-item-color: #ffffff;
+  --contexify-activeItem-color: #ffffff;
+  --contexify-activeItem-bgColor: rgba(255, 255, 255, 0.08);
+  --contexify-rightSlot-color: #9d9d9d;
+  --contexify-separator-color: rgba(255, 255, 255, 0.1);
+  --contexify-arrow-color: #9d9d9d;
+
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark .react-contexify__item:not(.react-contexify__item--disabled):hover > .react-contexify__item__content,
+.dark .react-contexify__item:not(.react-contexify__item--disabled):hover > .react-contexify__item__content {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark .react-contexify__separator,
+.dark .react-contexify__separator {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark .react-contexify__submenu > .react-contexify,
+.dark .react-contexify__submenu > .react-contexify {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }

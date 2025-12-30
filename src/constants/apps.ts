@@ -1,13 +1,28 @@
 import { AppConfig } from '@/types';
+import {
+  FolderFilled,
+  DocumentTextFilled,
+  SettingsFilled,
+  GlobeFilled,
+  WindowConsoleFilled,
+  CalculatorFilled,
+  ImageFilled,
+} from '@fluentui/react-icons';
+import React from 'react';
 
 // Placeholder components - will be replaced with actual implementations
 const PlaceholderApp = () => null;
+
+// Helper to create colored icon
+const createIcon = (IconComponent: React.ComponentType<{ style?: React.CSSProperties }>, color: string) =>
+  React.createElement('div', { style: { color, width: '100%', height: '100%' } },
+    React.createElement(IconComponent, { style: { width: '100%', height: '100%' } }));
 
 export const APP_REGISTRY: Record<string, AppConfig> = {
   'file-explorer': {
     id: 'file-explorer',
     name: 'File Explorer',
-    icon: '/icons/apps/file-explorer.svg',
+    icon: createIcon(FolderFilled, '#FFB900'),
     component: PlaceholderApp,
     defaultSize: { width: 900, height: 600 },
     minSize: { width: 400, height: 300 },
@@ -15,7 +30,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   'notepad': {
     id: 'notepad',
     name: 'Notepad',
-    icon: '/icons/apps/notepad.svg',
+    icon: createIcon(DocumentTextFilled, '#0078D4'),
     component: PlaceholderApp,
     defaultSize: { width: 650, height: 450 },
     minSize: { width: 300, height: 200 },
@@ -23,7 +38,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   'settings': {
     id: 'settings',
     name: 'Settings',
-    icon: '/icons/apps/settings.svg',
+    icon: createIcon(SettingsFilled, '#6B6B6B'),
     component: PlaceholderApp,
     defaultSize: { width: 1000, height: 700 },
     minSize: { width: 750, height: 500 },
@@ -32,7 +47,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   'browser': {
     id: 'browser',
     name: 'Edge',
-    icon: '/icons/apps/edge.svg',
+    icon: createIcon(GlobeFilled, '#0078D4'),
     component: PlaceholderApp,
     defaultSize: { width: 1200, height: 800 },
     minSize: { width: 600, height: 400 },
@@ -40,7 +55,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   'terminal': {
     id: 'terminal',
     name: 'Terminal',
-    icon: '/icons/apps/terminal.svg',
+    icon: createIcon(WindowConsoleFilled, '#0C0C0C'),
     component: PlaceholderApp,
     defaultSize: { width: 800, height: 500 },
     minSize: { width: 400, height: 300 },
@@ -48,7 +63,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   'calculator': {
     id: 'calculator',
     name: 'Calculator',
-    icon: '/icons/apps/calculator.svg',
+    icon: createIcon(CalculatorFilled, '#0078D4'),
     component: PlaceholderApp,
     defaultSize: { width: 320, height: 500 },
     minSize: { width: 280, height: 400 },
@@ -57,7 +72,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   'image-viewer': {
     id: 'image-viewer',
     name: 'Photos',
-    icon: '/icons/apps/photos.svg',
+    icon: createIcon(ImageFilled, '#FF8C00'),
     component: PlaceholderApp,
     defaultSize: { width: 800, height: 600 },
     minSize: { width: 400, height: 300 },

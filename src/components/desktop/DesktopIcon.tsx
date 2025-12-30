@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 interface DesktopIconProps {
@@ -28,56 +28,76 @@ export function DesktopIcon({
 }: DesktopIconProps) {
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [currentPos, setCurrentPos] = useState({ x, y });
   const iconRef = useRef<HTMLButtonElement>(null);
-  const hasMoved = useRef(false);
+  const dragOffsetRef = useRef({ x: 0, y: 0 });
+  const hasMovedRef = useRef(false);
+  const isDraggingRef = useRef(false);
 
-  const handleClick = useCallback(() => {
-    // Don't trigger click if we just finished dragging
-    if (hasMoved.current) {
-      hasMoved.current = false;
-      return;
+  // Sync position from props when not dragging
+  useEffect(() => {
+    if (!isDraggingRef.current) {
+      setCurrentPos({ x, y });
     }
+  }, [x, y]);
 
-    if (clickTimeout) {
-      // Double click detected
-      clearTimeout(clickTimeout);
-      setClickTimeout(null);
-      onDoubleClick?.(id);
-    } else {
-      // Single click - wait for potential double click
-      onSelect?.(id);
-      const timeout = setTimeout(() => {
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      // Don't trigger click if we just finished dragging
+      if (hasMovedRef.current) {
+        hasMovedRef.current = false;
+        return;
+      }
+
+      if (clickTimeout) {
+        // Double click detected
+        clearTimeout(clickTimeout);
         setClickTimeout(null);
-      }, 300);
-      setClickTimeout(timeout);
-    }
-  }, [id, clickTimeout, onSelect, onDoubleClick]);
+        onDoubleClick?.(id);
+      } else {
+        // Single click - wait for potential double click
+        onSelect?.(id);
+        const timeout = setTimeout(() => {
+          setClickTimeout(null);
+        }, 300);
+        setClickTimeout(timeout);
+      }
+    },
+    [id, clickTimeout, onSelect, onDoubleClick]
+  );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       if (e.button !== 0) return; // Only left click
+      e.stopPropagation();
 
       onSelect?.(id);
 
       const rect = iconRef.current?.getBoundingClientRect();
       if (!rect) return;
 
-      setDragOffset({
+      // Store offset in ref (immediate update)
+      dragOffsetRef.current = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
-      });
+      };
+
+      isDraggingRef.current = true;
       setIsDragging(true);
-      hasMoved.current = false;
+      hasMovedRef.current = false;
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
-        hasMoved.current = true;
+        if (!isDraggingRef.current) return;
+
         const parentRect = iconRef.current?.parentElement?.getBoundingClientRect();
         if (!parentRect) return;
 
-        const newX = moveEvent.clientX - parentRect.left - dragOffset.x;
-        const newY = moveEvent.clientY - parentRect.top - dragOffset.y;
+        hasMovedRef.current = true;
+
+        const newX = moveEvent.clientX - parentRect.left - dragOffsetRef.current.x;
+        const newY = moveEvent.clientY - parentRect.top - dragOffsetRef.current.y;
 
         // Clamp to parent bounds
         const clampedX = Math.max(0, Math.min(newX, parentRect.width - 80));
@@ -89,14 +109,16 @@ export function DesktopIcon({
       const handleMouseUp = (upEvent: MouseEvent) => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+
+        isDraggingRef.current = false;
         setIsDragging(false);
 
-        if (hasMoved.current) {
+        if (hasMovedRef.current) {
           const parentRect = iconRef.current?.parentElement?.getBoundingClientRect();
           if (!parentRect) return;
 
-          const finalX = upEvent.clientX - parentRect.left - dragOffset.x;
-          const finalY = upEvent.clientY - parentRect.top - dragOffset.y;
+          const finalX = upEvent.clientX - parentRect.left - dragOffsetRef.current.x;
+          const finalY = upEvent.clientY - parentRect.top - dragOffsetRef.current.y;
 
           // Clamp to parent bounds
           const clampedX = Math.max(0, Math.min(finalX, parentRect.width - 80));
@@ -109,11 +131,8 @@ export function DesktopIcon({
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     },
-    [id, dragOffset, onSelect, onDragEnd]
+    [id, onSelect, onDragEnd]
   );
-
-  // Sync position from props when not dragging
-  const displayPos = isDragging ? currentPos : { x, y };
 
   return (
     <button
@@ -123,18 +142,18 @@ export function DesktopIcon({
       onMouseDown={handleMouseDown}
       style={{
         position: 'absolute',
-        left: displayPos.x,
-        top: displayPos.y,
+        left: currentPos.x,
+        top: currentPos.y,
         cursor: isDragging ? 'grabbing' : 'pointer',
       }}
       className={cn(
-        'flex flex-col items-center gap-1 p-2 rounded-md w-20',
-        'transition-colors duration-100',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50',
+        'flex flex-col items-center gap-1 p-2 rounded w-20',
+        'transition-colors duration-75',
+        'focus:outline-none',
         isSelected
-          ? 'bg-white/30 border border-white/40'
-          : 'hover:bg-white/20 border border-transparent',
-        isDragging && 'opacity-80 z-50'
+          ? 'bg-white/20'
+          : 'hover:bg-white/10',
+        isDragging && 'opacity-70 z-50'
       )}
     >
       {/* Icon */}

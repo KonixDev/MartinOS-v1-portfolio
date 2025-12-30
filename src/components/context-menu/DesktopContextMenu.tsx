@@ -12,7 +12,6 @@ import {
   FolderPlus,
   FileText,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useWindowStore } from '@/stores/windowStore';
 import { APP_REGISTRY } from '@/constants';
 
@@ -69,24 +68,11 @@ export function DesktopContextMenu() {
   return (
     <Menu
       id={DESKTOP_MENU_ID}
-      className={cn(
-        '!bg-win-surface/95 dark:!bg-win-dark-surface/95',
-        '!backdrop-blur-xl',
-        '!border !border-win-border dark:!border-win-dark-border',
-        '!rounded-lg !shadow-xl',
-        '!p-1 !min-w-[200px]'
-      )}
       animation="fade"
     >
       {/* View Options */}
       <Submenu
         label={<MenuItem icon={<Eye className="w-4 h-4" />} label="View" />}
-        className={cn(
-          '!bg-win-surface/95 dark:!bg-win-dark-surface/95',
-          '!backdrop-blur-xl',
-          '!border !border-win-border dark:!border-win-dark-border',
-          '!rounded-lg !shadow-xl'
-        )}
       >
         <Item onClick={() => console.log('Large icons')}>
           <MenuItem icon={<span />} label="Large icons" />
@@ -113,12 +99,6 @@ export function DesktopContextMenu() {
       {/* Sort By */}
       <Submenu
         label={<MenuItem icon={<SortAsc className="w-4 h-4" />} label="Sort by" />}
-        className={cn(
-          '!bg-win-surface/95 dark:!bg-win-dark-surface/95',
-          '!backdrop-blur-xl',
-          '!border !border-win-border dark:!border-win-dark-border',
-          '!rounded-lg !shadow-xl'
-        )}
       >
         <Item onClick={() => console.log('Sort by name')}>
           <MenuItem icon={<span />} label="Name" />
@@ -143,12 +123,6 @@ export function DesktopContextMenu() {
       {/* New */}
       <Submenu
         label={<MenuItem icon={<FolderPlus className="w-4 h-4" />} label="New" />}
-        className={cn(
-          '!bg-win-surface/95 dark:!bg-win-dark-surface/95',
-          '!backdrop-blur-xl',
-          '!border !border-win-border dark:!border-win-dark-border',
-          '!rounded-lg !shadow-xl'
-        )}
       >
         <Item onClick={() => console.log('New folder')}>
           <MenuItem icon={<FolderPlus className="w-4 h-4" />} label="Folder" />

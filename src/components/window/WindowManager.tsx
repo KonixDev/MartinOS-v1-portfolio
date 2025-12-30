@@ -9,8 +9,7 @@ export function WindowManager() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="relative w-full h-full pointer-events-auto">
-        {windows.map((window) => {
+      {windows.map((window) => {
           const app = APP_REGISTRY[window.appId];
           const AppComponent = app?.component;
 
@@ -40,7 +39,6 @@ export function WindowManager() {
             </Window>
           );
         })}
-      </div>
     </div>
   );
 }
