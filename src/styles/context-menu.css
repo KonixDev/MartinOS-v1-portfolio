@@ -1,0 +1,43 @@
+/* Custom Windows 11 Context Menu Styles */
+.react-contexify {
+  --contexify-zIndex: 9999;
+  --contexify-menu-bgColor: transparent;
+  --contexify-menu-padding: 4px;
+  --contexify-menu-borderRadius: 8px;
+  --contexify-menu-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+
+  --contexify-item-color: var(--win-text-primary);
+  --contexify-activeItem-color: var(--win-text-primary);
+  --contexify-activeItem-bgColor: rgba(255, 255, 255, 0.08);
+  --contexify-rightSlot-color: var(--win-text-secondary);
+
+  --contexify-separator-color: var(--win-border);
+  --contexify-arrow-color: var(--win-text-secondary);
+}
+
+.react-contexify__item__content {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.react-contexify__separator {
+  margin: 4px 8px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.react-contexify__submenu {
+  top: -4px;
+  margin-left: 4px;
+}
+
+/* Dark theme support */
+:root.dark .react-contexify {
+  --contexify-item-color: var(--win-dark-text-primary);
+  --contexify-activeItem-color: var(--win-dark-text-primary);
+  --contexify-activeItem-bgColor: rgba(255, 255, 255, 0.1);
+  --contexify-rightSlot-color: var(--win-dark-text-secondary);
+  --contexify-separator-color: var(--win-dark-border);
+  --contexify-arrow-color: var(--win-dark-text-secondary);
+}

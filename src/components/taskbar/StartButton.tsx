@@ -11,6 +11,7 @@ export function StartButton({ onClick, isActive = false }: StartButtonProps) {
   return (
     <button
       onClick={onClick}
+      data-start-button
       className={cn(
         'w-10 h-10 flex items-center justify-center rounded-md',
         'transition-colors duration-100',

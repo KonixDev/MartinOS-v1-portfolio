@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { DesktopIcon } from './DesktopIcon';
 import { useWindowStore } from '@/stores/windowStore';
+import { useDesktopStore, GRID_SIZE, ICON_MARGIN } from '@/stores/desktopStore';
 import { DESKTOP_APPS, APP_REGISTRY } from '@/constants';
 
 interface DesktopApp {
@@ -13,8 +14,13 @@ interface DesktopApp {
 }
 
 export function DesktopGrid() {
-  const [selectedIconId, setSelectedIconId] = useState<string | null>(null);
   const openWindow = useWindowStore((state) => state.openWindow);
+  const {
+    iconPositions,
+    selectedIconId,
+    setIconPosition,
+    setSelectedIcon,
+  } = useDesktopStore();
 
   // Create desktop icons from DESKTOP_APPS
   const desktopIcons: DesktopApp[] = DESKTOP_APPS.map((appId) => {
@@ -27,9 +33,25 @@ export function DesktopGrid() {
     };
   });
 
-  const handleSelect = useCallback((id: string) => {
-    setSelectedIconId(id);
-  }, []);
+  // Calculate default position for icon (grid layout in column)
+  const getDefaultPosition = (index: number) => ({
+    x: ICON_MARGIN,
+    y: index * GRID_SIZE + ICON_MARGIN,
+  });
+
+  // Get position for an icon (from store or default)
+  const getIconPosition = (iconId: string, index: number) => {
+    const storedPos = iconPositions[iconId];
+    if (storedPos) return storedPos;
+    return getDefaultPosition(index);
+  };
+
+  const handleSelect = useCallback(
+    (id: string) => {
+      setSelectedIcon(id);
+    },
+    [setSelectedIcon]
+  );
 
   const handleDoubleClick = useCallback(
     (id: string) => {
@@ -47,29 +69,45 @@ export function DesktopGrid() {
     [desktopIcons, openWindow]
   );
 
+  const handleDragEnd = useCallback(
+    (id: string, x: number, y: number) => {
+      setIconPosition(id, x, y);
+    },
+    [setIconPosition]
+  );
+
   // Deselect when clicking outside icons
-  const handleDesktopClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      setSelectedIconId(null);
-    }
-  }, []);
+  const handleDesktopClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        setSelectedIcon(null);
+      }
+    },
+    [setSelectedIcon]
+  );
 
   return (
     <div
-      className="grid grid-cols-1 gap-1 content-start h-full"
+      className="relative w-full h-full"
       onClick={handleDesktopClick}
     >
-      {desktopIcons.map((icon) => (
-        <DesktopIcon
-          key={icon.id}
-          id={icon.id}
-          name={icon.name}
-          icon={icon.icon}
-          isSelected={selectedIconId === icon.id}
-          onSelect={handleSelect}
-          onDoubleClick={handleDoubleClick}
-        />
-      ))}
+      {desktopIcons.map((icon, index) => {
+        const pos = getIconPosition(icon.id, index);
+        return (
+          <DesktopIcon
+            key={icon.id}
+            id={icon.id}
+            name={icon.name}
+            icon={icon.icon}
+            x={pos.x}
+            y={pos.y}
+            isSelected={selectedIconId === icon.id}
+            onSelect={handleSelect}
+            onDoubleClick={handleDoubleClick}
+            onDragEnd={handleDragEnd}
+          />
+        );
+      })}
     </div>
   );
 }

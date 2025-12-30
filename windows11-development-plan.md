@@ -552,14 +552,14 @@ export const useWindowStore = create<WindowStore>()(
 - [x] Implementar wallpaper
 - [x] Grid de iconos
 - [x] Selección de iconos
-- [ ] Context menu del desktop
+- [x] Context menu del desktop
 
 #### 2.2 Desktop Icons
 - [x] Crear `components/desktop/DesktopIcon.tsx`
 - [x] Double-click para abrir
-- [ ] Drag & drop para reorganizar
+- [x] Drag & drop para reorganizar
 - [x] Selección visual
-- [ ] Persistencia de posiciones en localStorage
+- [x] Persistencia de posiciones en localStorage
 
 #### 2.3 Taskbar
 - [x] Crear `components/taskbar/Taskbar.tsx`
@@ -581,7 +581,7 @@ export const useWindowStore = create<WindowStore>()(
 #### 2.6 System Tray
 - [x] Crear `components/taskbar/SystemTray.tsx`
 - [x] Iconos del sistema (wifi, sonido, batería)
-- [ ] Click para Quick Settings
+- [x] Click para Quick Settings
 
 #### 2.7 Clock
 - [x] Crear `components/taskbar/Clock.tsx`
@@ -594,31 +594,31 @@ export const useWindowStore = create<WindowStore>()(
 ### Fase 3: Start Menu y Context Menu (Días 8-10)
 
 #### 3.1 Start Menu
-- [ ] Crear `components/start-menu/StartMenu.tsx`
-- [ ] Animación de apertura/cierre
-- [ ] Layout de Windows 11 (pinned + recommended)
-- [ ] Efecto acrylic
+- [x] Crear `components/start-menu/StartMenu.tsx`
+- [x] Animación de apertura/cierre
+- [x] Layout de Windows 11 (pinned + recommended)
+- [x] Efecto acrylic
 
 #### 3.2 Search Bar
-- [ ] Crear `components/start-menu/SearchBar.tsx`
-- [ ] Input funcional
-- [ ] Filtrar apps por nombre
+- [x] Crear `components/start-menu/SearchBar.tsx`
+- [x] Input funcional
+- [x] Filtrar apps por nombre
 
 #### 3.3 Pinned Apps
-- [ ] Crear `components/start-menu/PinnedApps.tsx`
-- [ ] Grid de apps pinneadas
-- [ ] Click para abrir app
+- [x] Crear `components/start-menu/PinnedApps.tsx`
+- [x] Grid de apps pinneadas
+- [x] Click para abrir app
 
 #### 3.4 Power Menu
-- [ ] Crear `components/start-menu/PowerMenu.tsx`
-- [ ] Sleep / Shutdown / Restart (solo visual)
+- [x] Crear `components/start-menu/PowerMenu.tsx`
+- [x] Sleep / Shutdown / Restart (solo visual)
 
 #### 3.5 Context Menu
-- [ ] Instalar y configurar react-contexify
-- [ ] Crear menú del desktop
-- [ ] Crear menú de archivos
-- [ ] Crear menú de carpetas
-- [ ] Estilos Windows 11 (acrylic, rounded)
+- [x] Instalar y configurar react-contexify
+- [x] Crear menú del desktop
+- [x] Crear menú de archivos
+- [x] Crear menú de carpetas
+- [x] Estilos Windows 11 (acrylic, rounded)
 
 ---
 

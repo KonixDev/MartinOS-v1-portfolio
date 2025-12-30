@@ -4,3 +4,4 @@ export { TaskbarApps } from './TaskbarApps';
 export { TaskbarItem } from './TaskbarItem';
 export { SystemTray } from './SystemTray';
 export { Clock } from './Clock';
+export { QuickSettings } from './QuickSettings';
