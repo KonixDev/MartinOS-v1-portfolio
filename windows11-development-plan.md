@@ -625,7 +625,7 @@ export const useWindowStore = create<WindowStore>()(
 ### Fase 4: Sistema de Archivos Virtual (Días 11-14)
 
 #### 4.1 Dexie Database Setup
-- [ ] Crear `lib/filesystem/index.ts`
+- [x] Crear `lib/filesystem/index.ts`
 ```typescript
 import Dexie, { Table } from 'dexie';
 
@@ -659,95 +659,95 @@ export const db = new FileSystemDB();
 ```
 
 #### 4.2 Operaciones del FileSystem
-- [ ] Crear `lib/filesystem/operations.ts`
-- [ ] `createFolder(path, name)`
-- [ ] `createFile(path, name, content)`
-- [ ] `deleteItem(path)`
-- [ ] `renameItem(path, newName)`
-- [ ] `moveItem(fromPath, toPath)`
-- [ ] `copyItem(fromPath, toPath)`
-- [ ] `getChildren(path)`
-- [ ] `getItem(path)`
+- [x] Crear `lib/filesystem/operations.ts`
+- [x] `createFolder(path, name)`
+- [x] `createFile(path, name, content)`
+- [x] `deleteItem(path)`
+- [x] `renameItem(path, newName)`
+- [x] `moveItem(fromPath, toPath)`
+- [x] `copyItem(fromPath, toPath)`
+- [x] `getChildren(path)`
+- [x] `getItem(path)`
 
 #### 4.3 Archivos por Defecto
-- [ ] Crear `lib/filesystem/defaultFiles.ts`
-- [ ] Estructura inicial: Desktop, Documents, Downloads, Pictures
-- [ ] Archivos de ejemplo
+- [x] Crear `lib/filesystem/defaultFiles.ts`
+- [x] Estructura inicial: Desktop, Documents, Downloads, Pictures
+- [x] Archivos de ejemplo
 
 #### 4.4 Zustand Store para FileSystem
-- [ ] Crear `stores/fileSystemStore.ts`
-- [ ] Current path
-- [ ] Selected items
-- [ ] Clipboard (copy/cut)
-- [ ] History (back/forward)
+- [x] Crear `stores/fileSystemStore.ts`
+- [x] Current path
+- [x] Selected items
+- [x] Clipboard (copy/cut)
+- [x] History (back/forward)
 
 ---
 
 ### Fase 5: Apps Core (Días 15-18)
 
 #### 5.1 File Explorer
-- [ ] Crear estructura en `apps/file-explorer/`
-- [ ] Sidebar con Quick Access
-- [ ] Address bar funcional
-- [ ] Lista de archivos/carpetas
-- [ ] Double-click para abrir
-- [ ] Navegación back/forward
-- [ ] Crear nueva carpeta
-- [ ] Renombrar archivos
+- [x] Crear estructura en `apps/file-explorer/`
+- [x] Sidebar con Quick Access
+- [x] Address bar funcional
+- [x] Lista de archivos/carpetas
+- [x] Double-click para abrir
+- [x] Navegación back/forward
+- [x] Crear nueva carpeta
+- [x] Renombrar archivos
 
 #### 5.2 Notepad
-- [ ] Crear `apps/notepad/Notepad.tsx`
-- [ ] Textarea para edición
-- [ ] Guardar archivo (en filesystem virtual)
-- [ ] Abrir archivo
-- [ ] Nombre del archivo en título
+- [x] Crear `apps/notepad/Notepad.tsx`
+- [x] Textarea para edición
+- [x] Guardar archivo (en filesystem virtual)
+- [x] Abrir archivo
+- [x] Nombre del archivo en título
 
 #### 5.3 Settings
-- [ ] Crear estructura en `apps/settings/`
-- [ ] Página: Personalization (wallpaper, theme)
-- [ ] Página: System (about)
-- [ ] Sidebar de navegación
-- [ ] Persistir configuración en localStorage
+- [x] Crear estructura en `apps/settings/`
+- [x] Página: Personalization (wallpaper, theme)
+- [x] Página: System (about)
+- [x] Sidebar de navegación
+- [x] Persistir configuración en localStorage
 
 #### 5.4 Calculator
-- [ ] Crear `apps/calculator/Calculator.tsx`
-- [ ] Calculadora básica funcional
-- [ ] Diseño Windows 11
+- [x] Crear `apps/calculator/Calculator.tsx`
+- [x] Calculadora básica funcional
+- [x] Diseño Windows 11
 
 #### 5.5 Terminal
-- [ ] Crear `apps/terminal/Terminal.tsx`
-- [ ] Comandos básicos: `dir`, `cd`, `cls`, `echo`
-- [ ] Output formateado
-- [ ] Historial de comandos
+- [x] Crear `apps/terminal/Terminal.tsx`
+- [x] Comandos básicos: `dir`, `cd`, `cls`, `echo`
+- [x] Output formateado
+- [x] Historial de comandos
 
 ---
 
 ### Fase 6: Browser y Polish (Días 19-21)
 
 #### 6.1 Browser
-- [ ] Crear estructura en `apps/browser/`
-- [ ] Address bar
-- [ ] iframe sandboxed
+- [x] Crear estructura en `apps/browser/`
+- [x] Address bar
+- [x] iframe sandboxed
 - [ ] Tabs (básico)
-- [ ] Navegación básica
+- [x] Navegación básica
 
 #### 6.2 Image Viewer
-- [ ] Crear `apps/image-viewer/ImageViewer.tsx`
-- [ ] Mostrar imagen
-- [ ] Zoom básico
+- [x] Crear `apps/image-viewer/ImageViewer.tsx`
+- [x] Mostrar imagen
+- [x] Zoom básico
 
 #### 6.3 Keyboard Shortcuts
-- [ ] Crear `hooks/useKeyboardShortcuts.ts`
-- [ ] Alt+F4: Cerrar ventana activa
-- [ ] Win+D: Mostrar desktop (minimizar todo)
-- [ ] Win: Toggle Start Menu
-- [ ] Alt+Tab: Cambiar ventana (simplificado)
+- [x] Crear `hooks/useKeyboardShortcuts.ts`
+- [x] Alt+F4: Cerrar ventana activa
+- [x] Win+D: Mostrar desktop (minimizar todo)
+- [x] Win: Toggle Start Menu
+- [x] Alt+Tab: Cambiar ventana (simplificado)
 
 #### 6.4 Polish Visual
-- [ ] Revisar todos los efectos acrylic
-- [ ] Ajustar animaciones
+- [x] Revisar todos los efectos acrylic
+- [x] Ajustar animaciones
 - [ ] Revisar responsive (mínimo tablets)
-- [ ] Dark mode completo
+- [x] Dark mode completo
 - [ ] Favicon y meta tags
 
 ---
