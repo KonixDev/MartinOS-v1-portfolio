@@ -1,48 +1,8 @@
-// Window types
-export interface WindowState {
-  id: string;
-  appId: string;
-  title: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  minWidth?: number;
-  minHeight?: number;
-  isMaximized: boolean;
-  isMinimized: boolean;
-  zIndex: number;
-}
-
-// App types
-export interface AppConfig {
-  id: string;
-  name: string;
-  icon: string;
-  component: React.ComponentType<AppProps>;
-  defaultWidth?: number;
-  defaultHeight?: number;
-  minWidth?: number;
-  minHeight?: number;
-  singleton?: boolean;
-}
-
-export interface AppProps {
-  windowId: string;
-}
-
-// Desktop icon types
-export interface DesktopIcon {
-  id: string;
-  appId: string;
-  name: string;
-  icon: string;
-  x: number;
-  y: number;
-}
-
-// Theme types
-export type Theme = 'light' | 'dark';
+// Re-export all types
+export * from './window';
+export * from './file';
+export * from './app';
+export * from './settings';
 
 // System tray types
 export interface SystemTrayItem {
@@ -50,4 +10,20 @@ export interface SystemTrayItem {
   icon: React.ReactNode;
   tooltip?: string;
   onClick?: () => void;
+}
+
+// Context menu types
+export interface ContextMenuItem {
+  id: string;
+  label: string;
+  icon?: React.ReactNode;
+  shortcut?: string;
+  disabled?: boolean;
+  separator?: boolean;
+  submenu?: ContextMenuItem[];
+  onClick?: () => void;
+}
+
+export interface ContextMenuConfig {
+  items: ContextMenuItem[];
 }
