@@ -524,7 +524,7 @@ export const useWindowStore = create<WindowStore>()(
 - [x] Implementar drag con react-rnd
 - [x] Implementar resize con react-rnd
 - [x] Añadir animaciones con Framer Motion
-- [ ] Implementar snap to edges (Aero Snap)
+- [x] Implementar snap to edges (Aero Snap)
 
 #### 1.4 Window Title Bar
 - [x] Crear `components/window/WindowTitleBar.tsx`
@@ -548,45 +548,45 @@ export const useWindowStore = create<WindowStore>()(
 ### Fase 2: Desktop y Taskbar (Días 5-7)
 
 #### 2.1 Desktop
-- [ ] Crear `components/desktop/Desktop.tsx`
-- [ ] Implementar wallpaper
-- [ ] Grid de iconos
-- [ ] Selección de iconos
+- [x] Crear `components/desktop/Desktop.tsx`
+- [x] Implementar wallpaper
+- [x] Grid de iconos
+- [x] Selección de iconos
 - [ ] Context menu del desktop
 
 #### 2.2 Desktop Icons
-- [ ] Crear `components/desktop/DesktopIcon.tsx`
-- [ ] Double-click para abrir
+- [x] Crear `components/desktop/DesktopIcon.tsx`
+- [x] Double-click para abrir
 - [ ] Drag & drop para reorganizar
-- [ ] Selección visual
+- [x] Selección visual
 - [ ] Persistencia de posiciones en localStorage
 
 #### 2.3 Taskbar
-- [ ] Crear `components/taskbar/Taskbar.tsx`
-- [ ] Layout centrado (estilo Windows 11)
-- [ ] Efecto acrylic/blur
+- [x] Crear `components/taskbar/Taskbar.tsx`
+- [x] Layout centrado (estilo Windows 11)
+- [x] Efecto acrylic/blur
 
 #### 2.4 Start Button
-- [ ] Crear `components/taskbar/StartButton.tsx`
-- [ ] Toggle Start Menu
-- [ ] Icono de Windows
+- [x] Crear `components/taskbar/StartButton.tsx`
+- [x] Toggle Start Menu
+- [x] Icono de Windows
 
 #### 2.5 Taskbar Apps
-- [ ] Crear `components/taskbar/TaskbarApps.tsx`
-- [ ] Mostrar apps pinneadas
-- [ ] Mostrar ventanas abiertas
-- [ ] Indicador de ventana activa
-- [ ] Click para focus/restore
+- [x] Crear `components/taskbar/TaskbarApps.tsx`
+- [x] Mostrar apps pinneadas
+- [x] Mostrar ventanas abiertas
+- [x] Indicador de ventana activa
+- [x] Click para focus/restore
 
 #### 2.6 System Tray
-- [ ] Crear `components/taskbar/SystemTray.tsx`
-- [ ] Iconos del sistema (wifi, sonido, batería)
+- [x] Crear `components/taskbar/SystemTray.tsx`
+- [x] Iconos del sistema (wifi, sonido, batería)
 - [ ] Click para Quick Settings
 
 #### 2.7 Clock
-- [ ] Crear `components/taskbar/Clock.tsx`
-- [ ] Hora actualizada cada minuto
-- [ ] Fecha formateada
+- [x] Crear `components/taskbar/Clock.tsx`
+- [x] Hora actualizada cada minuto
+- [x] Fecha formateada
 - [ ] Click para calendario (opcional)
 
 ---
