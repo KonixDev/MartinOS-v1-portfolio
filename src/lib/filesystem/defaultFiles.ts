@@ -85,6 +85,6 @@ export const initializeFileSystem = async (): Promise<void> => {
     return; // Already initialized
   }
 
-  // Add default folders and files
-  await db.items.bulkAdd([...DEFAULT_FOLDERS, ...DEFAULT_FILES]);
+  // Add default folders and files (bulkPut handles duplicates gracefully)
+  await db.items.bulkPut([...DEFAULT_FOLDERS, ...DEFAULT_FILES]);
 };

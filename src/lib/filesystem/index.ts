@@ -6,8 +6,9 @@ export class FileSystemDB extends Dexie {
 
   constructor() {
     super('WindowsFileSystem');
-    this.version(1).stores({
-      items: '++id, path, parentPath, type, name',
+    // Use path as primary key to ensure uniqueness
+    this.version(2).stores({
+      items: 'path, parentPath, type, name',
     });
   }
 }
