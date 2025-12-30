@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { WindowManager } from '@/components/window';
 import { Desktop, DesktopGrid } from '@/components/desktop';
 import { Taskbar } from '@/components/taskbar';
 import { StartMenu } from '@/components/start-menu';
 import { DesktopContextMenu } from '@/components/context-menu';
+import { useKeyboardShortcuts } from '@/hooks';
 import '@/styles/context-menu.css';
 
 export default function Home() {
@@ -23,6 +24,15 @@ export default function Home() {
     setIsStartMenuOpen(false);
     setSearchQuery('');
   };
+
+  const handleStartMenuToggle = useCallback(() => {
+    setIsStartMenuOpen((prev) => !prev);
+  }, []);
+
+  // Enable keyboard shortcuts
+  useKeyboardShortcuts({
+    onStartMenu: handleStartMenuToggle,
+  });
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-win-bg-primary dark:bg-win-dark-bg-primary">

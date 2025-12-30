@@ -16,9 +16,8 @@ import { Notepad } from '@/apps/notepad';
 import { Settings } from '@/apps/settings';
 import { Calculator } from '@/apps/calculator';
 import { Terminal } from '@/apps/terminal';
-
-// Placeholder components - will be replaced with actual implementations
-const PlaceholderApp = () => null;
+import { Browser } from '@/apps/browser';
+import { ImageViewer } from '@/apps/image-viewer';
 
 // Helper to create colored icon
 const createIcon = (IconComponent: React.ComponentType<{ style?: React.CSSProperties }>, color: string) =>
@@ -55,7 +54,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     id: 'browser',
     name: 'Edge',
     icon: createIcon(GlobeFilled, '#0078D4'),
-    component: PlaceholderApp,
+    component: Browser,
     defaultSize: { width: 1200, height: 800 },
     minSize: { width: 600, height: 400 },
   },
@@ -80,7 +79,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     id: 'image-viewer',
     name: 'Photos',
     icon: createIcon(ImageFilled, '#FF8C00'),
-    component: PlaceholderApp,
+    component: ImageViewer,
     defaultSize: { width: 800, height: 600 },
     minSize: { width: 400, height: 300 },
   },
