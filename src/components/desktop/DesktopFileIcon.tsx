@@ -13,6 +13,7 @@ interface DesktopFileIconProps {
   isSelected: boolean;
   onSelect: (path: string, ctrlKey?: boolean) => void;
   onDoubleClick: (item: FileSystemItem) => void;
+  onContextMenu?: (e: React.MouseEvent, item: FileSystemItem) => void;
 }
 
 function getFileIconPath(item: FileSystemItem): string {
@@ -71,6 +72,7 @@ export function DesktopFileIcon({
   isSelected,
   onSelect,
   onDoubleClick,
+  onContextMenu,
 }: DesktopFileIconProps) {
   const iconRef = useRef<HTMLButtonElement>(null);
   const [currentPos, setCurrentPos] = useState({ x, y });
@@ -132,6 +134,19 @@ export function DesktopFileIcon({
     [item, onDoubleClick]
   );
 
+  const handleContextMenu = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Select this item if not already selected
+      if (!isSelected) {
+        onSelect(item.path);
+      }
+      onContextMenu?.(e, item);
+    },
+    [item, isSelected, onSelect, onContextMenu]
+  );
+
   return (
     <button
       ref={combinedRef}
@@ -144,6 +159,7 @@ export function DesktopFileIcon({
       }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
+      onContextMenu={handleContextMenu}
       {...attributes}
       {...listeners}
       className={cn(

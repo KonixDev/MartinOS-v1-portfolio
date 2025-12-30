@@ -5,7 +5,7 @@ import { WindowManager } from '@/components/window';
 import { Desktop, DesktopGrid } from '@/components/desktop';
 import { Taskbar } from '@/components/taskbar';
 import { StartMenu } from '@/components/start-menu';
-import { DesktopContextMenu } from '@/components/context-menu';
+import { DesktopContextMenu, DesktopItemContextMenu } from '@/components/context-menu';
 import { BootScreen } from '@/components/boot';
 import { FileDndProvider } from '@/components/dnd';
 import { useKeyboardShortcuts } from '@/hooks';
@@ -102,6 +102,7 @@ export default function Home() {
 
         {/* Context Menus */}
         <DesktopContextMenu />
+        <DesktopItemContextMenu />
       </div>
     </FileDndProvider>
   );

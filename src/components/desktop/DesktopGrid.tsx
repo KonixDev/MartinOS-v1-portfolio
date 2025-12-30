@@ -1,12 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useMemo } from 'react';
+import { useContextMenu } from 'react-contexify';
 import { DesktopIcon } from './DesktopIcon';
 import { DesktopFileIcon } from './DesktopFileIcon';
 import { SelectionBox } from './SelectionBox';
 import { useWindowStore } from '@/stores/windowStore';
 import { useDesktopStore, GRID_SIZE, ICON_MARGIN } from '@/stores/desktopStore';
 import { DESKTOP_APPS, APP_REGISTRY } from '@/constants';
+import { DESKTOP_ITEM_MENU_ID } from '@/components/context-menu';
 import type { FileSystemItem } from '@/types';
 
 interface DesktopApp {
@@ -31,6 +33,11 @@ export function DesktopGrid() {
     clearSelection,
     loadDesktopItems,
   } = useDesktopStore();
+
+  // Context menu for file items
+  const { show: showItemMenu } = useContextMenu({
+    id: DESKTOP_ITEM_MENU_ID,
+  });
 
   // Load desktop files on mount
   useEffect(() => {
@@ -231,6 +238,27 @@ export function DesktopGrid() {
     // Selection ended - keep current selection
   }, []);
 
+  // Handle context menu for file icons
+  const handleFileContextMenu = useCallback(
+    (e: React.MouseEvent, item: FileSystemItem) => {
+      // Get all selected desktop file items
+      const selectedItems = desktopItems.filter(
+        (di) => selectedIconIds.includes(`desktop-file-${di.path}`)
+      );
+
+      // If the clicked item is not in the selection, just use the clicked item
+      const itemsToShow = selectedItems.length > 0 && selectedIconIds.includes(`desktop-file-${item.path}`)
+        ? selectedItems
+        : [item];
+
+      showItemMenu({
+        event: e,
+        props: { items: itemsToShow },
+      });
+    },
+    [desktopItems, selectedIconIds, showItemMenu]
+  );
+
   // Calculate file icon positions (after app icons)
   const getFilePosition = (index: number) => {
     const appCount = desktopIcons.length;
@@ -284,6 +312,7 @@ export function DesktopGrid() {
             isSelected={selectedIconIds.includes(`desktop-file-${item.path}`)}
             onSelect={(path, ctrlKey) => handleSelect(`desktop-file-${path}`, ctrlKey)}
             onDoubleClick={handleFileDoubleClick}
+            onContextMenu={handleFileContextMenu}
           />
         );
       })}
