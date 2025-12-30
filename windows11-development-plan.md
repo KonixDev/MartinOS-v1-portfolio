@@ -252,16 +252,16 @@ windows11-web/
 ### Fase 0: Setup del Proyecto (Día 1)
 
 #### 0.1 Inicialización
-- [ ] Crear proyecto Next.js 16 con TypeScript
+- [x] Crear proyecto Next.js 16 con TypeScript
   ```bash
   npx create-next-app@latest windows11-web --typescript --tailwind --eslint --app --src-dir
   ```
-- [ ] Configurar `next.config.js` para static export
-- [ ] Instalar dependencias principales
-- [ ] Configurar Tailwind con tema personalizado
-- [ ] Crear estructura de carpetas
-- [ ] Configurar ESLint y Prettier
-- [ ] Inicializar repositorio Git
+- [x] Configurar `next.config.js` para static export
+- [x] Instalar dependencias principales
+- [x] Configurar Tailwind con tema personalizado
+- [x] Crear estructura de carpetas
+- [x] Configurar ESLint y Prettier
+- [x] Inicializar repositorio Git
 
 #### 0.2 Configuración de Tailwind
 ```typescript
@@ -324,7 +324,7 @@ export default config
 ### Fase 1: Window Manager (Días 2-4)
 
 #### 1.1 Types y Interfaces
-- [ ] Crear `types/window.ts`
+- [x] Crear `types/window.ts`
 ```typescript
 export interface WindowState {
   id: string;
@@ -355,7 +355,7 @@ export interface WindowActions {
 ```
 
 #### 1.2 Zustand Store para Windows
-- [ ] Crear `stores/windowStore.ts`
+- [x] Crear `stores/windowStore.ts`
 ```typescript
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -520,28 +520,28 @@ export const useWindowStore = create<WindowStore>()(
 ```
 
 #### 1.3 Componente Window
-- [ ] Crear `components/window/Window.tsx`
-- [ ] Implementar drag con react-rnd
-- [ ] Implementar resize con react-rnd
-- [ ] Añadir animaciones con Framer Motion
+- [x] Crear `components/window/Window.tsx`
+- [x] Implementar drag con react-rnd
+- [x] Implementar resize con react-rnd
+- [x] Añadir animaciones con Framer Motion
 - [ ] Implementar snap to edges (Aero Snap)
 
 #### 1.4 Window Title Bar
-- [ ] Crear `components/window/WindowTitleBar.tsx`
-- [ ] Implementar drag handle
-- [ ] Double-click para maximizar
+- [x] Crear `components/window/WindowTitleBar.tsx`
+- [x] Implementar drag handle
+- [x] Double-click para maximizar
 
 #### 1.5 Window Controls
-- [ ] Crear `components/window/WindowControls.tsx`
-- [ ] Botón minimize
-- [ ] Botón maximize/restore
-- [ ] Botón close
-- [ ] Estilos hover (colores Windows 11)
+- [x] Crear `components/window/WindowControls.tsx`
+- [x] Botón minimize
+- [x] Botón maximize/restore
+- [x] Botón close
+- [x] Estilos hover (colores Windows 11)
 
 #### 1.6 Window Manager
-- [ ] Crear `components/window/WindowManager.tsx`
-- [ ] Renderizar todas las ventanas activas
-- [ ] Manejar z-index ordering
+- [x] Crear `components/window/WindowManager.tsx`
+- [x] Renderizar todas las ventanas activas
+- [x] Manejar z-index ordering
 
 ---
 
