@@ -90,7 +90,7 @@ export function StartMenu({
             'absolute bottom-14 left-1/2 -translate-x-1/2',
             'w-[640px] max-h-[680px]',
             'rounded-lg overflow-hidden',
-            'bg-win-surface/95 dark:bg-win-dark-surface/95',
+            'bg-win-mica dark:bg-win-dark-mica',
             'backdrop-blur-2xl',
             'border border-win-border dark:border-win-dark-border',
             'shadow-2xl',

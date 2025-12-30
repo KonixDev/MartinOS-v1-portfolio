@@ -202,24 +202,24 @@ function CalcButton({
 
   const variantClasses = {
     number: cn(
-      'bg-white dark:bg-win-dark-bg',
+      'bg-win-window-bg dark:bg-win-dark-window-bg',
       'text-win-text-primary dark:text-win-dark-text-primary',
-      'hover:bg-gray-100 dark:hover:bg-white/10',
-      'active:bg-gray-200 dark:active:bg-white/20'
+      'hover:bg-black/5 dark:hover:bg-white/10',
+      'active:bg-black/10 dark:active:bg-white/20'
     ),
     operator: cn(
       isActive
         ? 'bg-win-accent text-white'
-        : 'bg-gray-100 dark:bg-white/5',
+        : 'bg-win-control-fill dark:bg-win-dark-control-fill',
       'text-win-text-primary dark:text-win-dark-text-primary',
-      'hover:bg-gray-200 dark:hover:bg-white/10',
-      'active:bg-gray-300 dark:active:bg-white/20'
+      'hover:bg-black/10 dark:hover:bg-white/10',
+      'active:bg-black/15 dark:active:bg-white/20'
     ),
     function: cn(
-      'bg-gray-100 dark:bg-white/5',
+      'bg-win-control-fill dark:bg-win-dark-control-fill',
       'text-win-text-primary dark:text-win-dark-text-primary',
-      'hover:bg-gray-200 dark:hover:bg-white/10',
-      'active:bg-gray-300 dark:active:bg-white/20'
+      'hover:bg-black/10 dark:hover:bg-white/10',
+      'active:bg-black/15 dark:active:bg-white/20'
     ),
     equals: cn(
       'bg-win-accent text-white',

@@ -20,7 +20,7 @@ export function FileExplorer({ windowId }: AppProps) {
 
   if (!isInitialized) {
     return (
-      <div className="flex items-center justify-center h-full bg-white dark:bg-win-dark-bg">
+      <div className="flex items-center justify-center h-full bg-win-window-bg dark:bg-win-dark-window-bg">
         <div className="text-win-text-secondary dark:text-win-dark-text-secondary">
           Loading...
         </div>
@@ -29,7 +29,7 @@ export function FileExplorer({ windowId }: AppProps) {
   }
 
   return (
-    <div className={cn('flex flex-col h-full', 'bg-white dark:bg-win-dark-bg')}>
+    <div className={cn('flex flex-col h-full', 'bg-win-window-bg dark:bg-win-dark-window-bg')}>
       {/* Toolbar */}
       <Toolbar />
 

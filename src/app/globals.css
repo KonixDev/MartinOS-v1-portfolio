@@ -1,54 +1,81 @@
 @import "tailwindcss";
 
 :root {
-  /* Windows 11 Light Theme */
-  --win-bg-primary: #f3f3f3;
-  --win-bg-secondary: #ffffff;
-  --win-bg-tertiary: #f9f9f9;
-  --win-text-primary: #000000;
-  --win-text-secondary: #5d5d5d;
-  --win-accent: #0078d4;
-  --win-accent-hover: #106ebe;
-  --win-border: #e5e5e5;
-  --win-taskbar: rgba(243, 243, 243, 0.8);
-  --win-window-bg: rgba(255, 255, 255, 0.85);
-  --win-mica: rgba(243, 243, 243, 0.7);
-  --win-shadow: rgba(0, 0, 0, 0.15);
+  /* Windows 11 Light Theme - Official Fluent Design System colors */
+  /* Source: https://github.com/microsoft/microsoft-ui-xaml/blob/winui2/main/dev/CommonStyles/Common_themeresources_any.xaml */
+  --win-bg-primary: #f3f3f3;              /* SolidBackgroundFillColorBase */
+  --win-bg-secondary: #eeeeee;            /* SolidBackgroundFillColorSecondary */
+  --win-bg-tertiary: #f9f9f9;             /* SolidBackgroundFillColorTertiary */
+  --win-text-primary: rgba(0, 0, 0, 0.89);    /* TextFillColorPrimary #E4000000 */
+  --win-text-secondary: rgba(0, 0, 0, 0.62);  /* TextFillColorSecondary #9E000000 */
+  --win-text-tertiary: rgba(0, 0, 0, 0.45);   /* TextFillColorTertiary #72000000 */
+  --win-text-disabled: rgba(0, 0, 0, 0.36);   /* TextFillColorDisabled */
+  --win-accent: #0078d4;                  /* SystemAccentColor */
+  --win-accent-hover: #106ebe;            /* SystemAccentColorDark1 */
+  --win-border: rgba(0, 0, 0, 0.06);      /* CardStrokeColorDefault #0F000000 */
+  --win-surface-stroke: rgba(117, 117, 117, 0.4);  /* SurfaceStrokeColorDefault #66757575 */
+  --win-control-fill: rgba(255, 255, 255, 0.7);    /* ControlFillColorDefault #B3FFFFFF */
+  --win-card-bg: rgba(255, 255, 255, 0.7);         /* CardBackgroundFillColorDefault #B3FFFFFF */
+  --win-layer-fill: rgba(255, 255, 255, 0.5);      /* LayerFillColorDefault #80FFFFFF */
+  --win-taskbar: rgba(243, 243, 243, 0.7);
+  --win-window-bg: #ffffff;
+  --win-mica: rgba(243, 243, 243, 0.85);
+  --win-shadow: rgba(0, 0, 0, 0.12);
 
-  /* Windows 11 Dark Theme */
-  --win-dark-bg-primary: #202020;
-  --win-dark-bg-secondary: #2d2d2d;
-  --win-dark-bg-tertiary: #383838;
-  --win-dark-text-primary: #ffffff;
-  --win-dark-text-secondary: #9d9d9d;
-  --win-dark-border: #3d3d3d;
-  --win-dark-taskbar: rgba(32, 32, 32, 0.8);
-  --win-dark-window-bg: rgba(32, 32, 32, 0.85);
-  --win-dark-mica: rgba(32, 32, 32, 0.7);
+  /* Windows 11 Dark Theme - Official Fluent Design System colors */
+  --win-dark-bg-primary: #202020;              /* SolidBackgroundFillColorBase */
+  --win-dark-bg-secondary: #1c1c1c;            /* SolidBackgroundFillColorSecondary */
+  --win-dark-bg-tertiary: #282828;             /* SolidBackgroundFillColorTertiary */
+  --win-dark-text-primary: #ffffff;                /* TextFillColorPrimary */
+  --win-dark-text-secondary: rgba(255, 255, 255, 0.77); /* TextFillColorSecondary #C5FFFFFF */
+  --win-dark-text-tertiary: rgba(255, 255, 255, 0.53);  /* TextFillColorTertiary #87FFFFFF */
+  --win-dark-text-disabled: rgba(255, 255, 255, 0.36);  /* TextFillColorDisabled */
+  --win-dark-border: rgba(0, 0, 0, 0.1);       /* CardStrokeColorDefault #19000000 */
+  --win-dark-surface-stroke: rgba(117, 117, 117, 0.4);  /* SurfaceStrokeColorDefault */
+  --win-dark-control-fill: rgba(255, 255, 255, 0.06);   /* ControlFillColorDefault #0FFFFFFF */
+  --win-dark-card-bg: rgba(255, 255, 255, 0.05);        /* CardBackgroundFillColorDefault #0DFFFFFF */
+  --win-dark-layer-fill: rgba(58, 58, 58, 0.3);         /* LayerFillColorDefault #4C3A3A3A */
+  --win-dark-taskbar: rgba(32, 32, 32, 0.7);
+  --win-dark-window-bg: #2d2d2d;
+  --win-dark-mica: rgba(32, 32, 32, 0.85);
 }
 
 @theme inline {
-  /* Colors */
+  /* Light theme colors */
+  --color-win-bg: var(--win-bg-primary);
   --color-win-bg-primary: var(--win-bg-primary);
   --color-win-bg-secondary: var(--win-bg-secondary);
   --color-win-bg-tertiary: var(--win-bg-tertiary);
   --color-win-text-primary: var(--win-text-primary);
   --color-win-text-secondary: var(--win-text-secondary);
+  --color-win-text-tertiary: var(--win-text-tertiary);
+  --color-win-text-disabled: var(--win-text-disabled);
   --color-win-accent: var(--win-accent);
   --color-win-accent-hover: var(--win-accent-hover);
   --color-win-border: var(--win-border);
+  --color-win-surface-stroke: var(--win-surface-stroke);
+  --color-win-control-fill: var(--win-control-fill);
+  --color-win-card-bg: var(--win-card-bg);
+  --color-win-layer-fill: var(--win-layer-fill);
   --color-win-taskbar: var(--win-taskbar);
   --color-win-window-bg: var(--win-window-bg);
   --color-win-mica: var(--win-mica);
   --color-win-shadow: var(--win-shadow);
 
   /* Dark theme colors */
+  --color-win-dark-bg: var(--win-dark-bg-primary);
   --color-win-dark-bg-primary: var(--win-dark-bg-primary);
   --color-win-dark-bg-secondary: var(--win-dark-bg-secondary);
   --color-win-dark-bg-tertiary: var(--win-dark-bg-tertiary);
   --color-win-dark-text-primary: var(--win-dark-text-primary);
   --color-win-dark-text-secondary: var(--win-dark-text-secondary);
+  --color-win-dark-text-tertiary: var(--win-dark-text-tertiary);
+  --color-win-dark-text-disabled: var(--win-dark-text-disabled);
   --color-win-dark-border: var(--win-dark-border);
+  --color-win-dark-surface-stroke: var(--win-dark-surface-stroke);
+  --color-win-dark-control-fill: var(--win-dark-control-fill);
+  --color-win-dark-card-bg: var(--win-dark-card-bg);
+  --color-win-dark-layer-fill: var(--win-dark-layer-fill);
   --color-win-dark-taskbar: var(--win-dark-taskbar);
   --color-win-dark-window-bg: var(--win-dark-window-bg);
   --color-win-dark-mica: var(--win-dark-mica);
@@ -87,7 +114,13 @@ body.dark {
   --win-bg-tertiary: var(--win-dark-bg-tertiary);
   --win-text-primary: var(--win-dark-text-primary);
   --win-text-secondary: var(--win-dark-text-secondary);
+  --win-text-tertiary: var(--win-dark-text-tertiary);
+  --win-text-disabled: var(--win-dark-text-disabled);
   --win-border: var(--win-dark-border);
+  --win-surface-stroke: var(--win-dark-surface-stroke);
+  --win-control-fill: var(--win-dark-control-fill);
+  --win-card-bg: var(--win-dark-card-bg);
+  --win-layer-fill: var(--win-dark-layer-fill);
   --win-taskbar: var(--win-dark-taskbar);
   --win-window-bg: var(--win-dark-window-bg);
   --win-mica: var(--win-dark-mica);

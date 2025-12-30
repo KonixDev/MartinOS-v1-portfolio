@@ -64,7 +64,7 @@ export function Browser({ windowId }: AppProps) {
   const isSecure = url.startsWith('https://');
 
   return (
-    <div className={cn('flex flex-col h-full', 'bg-white dark:bg-win-dark-bg')}>
+    <div className={cn('flex flex-col h-full', 'bg-win-window-bg dark:bg-win-dark-window-bg')}>
       {/* Navigation Bar */}
       <div
         className={cn(
@@ -104,7 +104,7 @@ export function Browser({ windowId }: AppProps) {
           <div
             className={cn(
               'flex items-center h-8 rounded-full px-3',
-              'bg-white dark:bg-win-dark-bg',
+              'bg-win-window-bg dark:bg-win-dark-window-bg',
               'border border-win-border dark:border-win-dark-border',
               'focus-within:ring-2 focus-within:ring-win-accent'
             )}
@@ -133,7 +133,7 @@ export function Browser({ windowId }: AppProps) {
       </div>
 
       {/* Browser Content */}
-      <div className="flex-1 relative bg-white">
+      <div className="flex-1 relative bg-win-window-bg dark:bg-win-dark-window-bg">
         {/* Loading indicator */}
         {isLoading && (
           <div className="absolute top-0 left-0 right-0 h-0.5 bg-win-accent animate-pulse" />

@@ -295,8 +295,8 @@ export function Window({
               transition={{ duration: 0.15, ease: 'easeOut' }}
               className={cn(
                 'flex flex-col h-full',
-                'bg-win-bg-secondary dark:bg-win-dark-bg-secondary',
-                'border border-win-border dark:border-win-dark-border',
+                'bg-win-window-bg dark:bg-win-dark-window-bg',
+                'border border-win-surface-stroke dark:border-win-dark-surface-stroke',
                 !isMaximized && !isSnapped && 'rounded-lg',
                 isFocused ? 'window-shadow-active' : 'window-shadow'
               )}

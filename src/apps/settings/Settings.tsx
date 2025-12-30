@@ -43,7 +43,7 @@ export function Settings({ windowId }: AppProps) {
   const [currentPage, setCurrentPage] = useState<SettingsPage>('personalization');
 
   return (
-    <div className={cn('flex h-full', 'bg-win-bg dark:bg-win-dark-bg')}>
+    <div className={cn('flex h-full', 'bg-win-window-bg dark:bg-win-dark-window-bg')}>
       {/* Sidebar */}
       <div
         className={cn(
@@ -170,7 +170,7 @@ function AboutPage() {
         <div
           className={cn(
             'p-6 rounded-lg',
-            'bg-white dark:bg-win-dark-bg-secondary',
+            'bg-win-card-bg dark:bg-win-dark-card-bg',
             'border border-win-border dark:border-win-dark-border'
           )}
         >
@@ -221,7 +221,7 @@ function SettingsSection({
     <div
       className={cn(
         'p-4 rounded-lg',
-        'bg-white dark:bg-win-dark-bg-secondary',
+        'bg-win-card-bg dark:bg-win-dark-card-bg',
         'border border-win-border dark:border-win-dark-border'
       )}
     >

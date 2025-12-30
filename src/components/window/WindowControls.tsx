@@ -23,6 +23,7 @@ export function WindowControls({
         onClick={onMinimize}
         className={cn(
           'window-control',
+          'text-win-text-primary dark:text-win-dark-text-primary',
           'hover:bg-black/5 dark:hover:bg-white/10'
         )}
         aria-label="Minimize"
@@ -35,6 +36,7 @@ export function WindowControls({
         onClick={onMaximize}
         className={cn(
           'window-control',
+          'text-win-text-primary dark:text-win-dark-text-primary',
           'hover:bg-black/5 dark:hover:bg-white/10'
         )}
         aria-label={isMaximized ? 'Restore' : 'Maximize'}
@@ -51,6 +53,7 @@ export function WindowControls({
         onClick={onClose}
         className={cn(
           'window-control window-control-close',
+          'text-win-text-primary dark:text-win-dark-text-primary',
           'rounded-tr-lg'
         )}
         aria-label="Close"
