@@ -1,11 +1,13 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { useDroppable } from '@dnd-kit/core';
 import { useContextMenu } from 'react-contexify';
 import { cn } from '@/lib/utils';
 import { TASKBAR_HEIGHT } from '@/constants';
 import { DESKTOP_MENU_ID } from '@/components/context-menu';
 import { useThemeStore, WALLPAPERS } from '@/stores/themeStore';
+import type { DropData } from '@/types';
 
 interface DesktopProps {
   children?: ReactNode;
@@ -14,6 +16,15 @@ interface DesktopProps {
 export function Desktop({ children }: DesktopProps) {
   const { show } = useContextMenu({
     id: DESKTOP_MENU_ID,
+  });
+
+  // Make desktop a drop target
+  const { setNodeRef, isOver } = useDroppable({
+    id: 'desktop-drop-zone',
+    data: {
+      type: 'desktop',
+      targetPath: '/Desktop',
+    } as DropData,
   });
 
   const wallpaperId = useThemeStore((state) => state.wallpaper);
@@ -49,9 +60,11 @@ export function Desktop({ children }: DesktopProps) {
 
   return (
     <div
+      ref={setNodeRef}
       className={cn(
         'absolute inset-0 bg-cover bg-center bg-no-repeat',
-        'select-none'
+        'select-none transition-colors duration-200',
+        isOver && 'ring-2 ring-inset ring-win-accent/50'
       )}
       style={{
         ...backgroundStyle,

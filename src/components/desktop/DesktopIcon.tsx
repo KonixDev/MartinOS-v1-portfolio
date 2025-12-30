@@ -10,7 +10,7 @@ interface DesktopIconProps {
   x: number;
   y: number;
   isSelected?: boolean;
-  onSelect?: (id: string) => void;
+  onSelect?: (id: string, ctrlKey?: boolean) => void;
   onDoubleClick?: (id: string) => void;
   onDragEnd?: (id: string, x: number, y: number) => void;
 }
@@ -58,7 +58,7 @@ export function DesktopIcon({
         onDoubleClick?.(id);
       } else {
         // Single click - wait for potential double click
-        onSelect?.(id);
+        onSelect?.(id, e.ctrlKey || e.metaKey);
         const timeout = setTimeout(() => {
           setClickTimeout(null);
         }, 300);
@@ -73,7 +73,7 @@ export function DesktopIcon({
       if (e.button !== 0) return; // Only left click
       e.stopPropagation();
 
-      onSelect?.(id);
+      onSelect?.(id, e.ctrlKey || e.metaKey);
 
       const rect = iconRef.current?.getBoundingClientRect();
       if (!rect) return;

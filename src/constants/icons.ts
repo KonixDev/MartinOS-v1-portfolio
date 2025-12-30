@@ -1,86 +1,42 @@
-// System icons
-export const SYSTEM_ICONS = {
-  windows: '/icons/system/windows.svg',
-  search: '/icons/system/search.svg',
-  taskView: '/icons/system/task-view.svg',
-  widgets: '/icons/system/widgets.svg',
-  chat: '/icons/system/chat.svg',
-
-  // System tray icons
-  wifi: '/icons/system/wifi.svg',
-  volume: '/icons/system/volume.svg',
-  battery: '/icons/system/battery.svg',
-  bluetooth: '/icons/system/bluetooth.svg',
-  notifications: '/icons/system/notifications.svg',
-
-  // Window controls
-  minimize: '/icons/system/minimize.svg',
-  maximize: '/icons/system/maximize.svg',
-  restore: '/icons/system/restore.svg',
-  close: '/icons/system/close.svg',
-
-  // Navigation
-  back: '/icons/system/back.svg',
-  forward: '/icons/system/forward.svg',
-  up: '/icons/system/up.svg',
-  refresh: '/icons/system/refresh.svg',
-  home: '/icons/system/home.svg',
-
-  // Power
-  power: '/icons/system/power.svg',
-  sleep: '/icons/system/sleep.svg',
-  restart: '/icons/system/restart.svg',
-  shutdown: '/icons/system/shutdown.svg',
-
-  // Actions
-  copy: '/icons/system/copy.svg',
-  cut: '/icons/system/cut.svg',
-  paste: '/icons/system/paste.svg',
-  delete: '/icons/system/delete.svg',
-  rename: '/icons/system/rename.svg',
-  newFolder: '/icons/system/new-folder.svg',
-  newFile: '/icons/system/new-file.svg',
-};
-
-// File type icons
+// File type icons (using ICO files from public/icons)
 export const FILE_ICONS = {
-  folder: '/icons/files/folder.svg',
-  folderOpen: '/icons/files/folder-open.svg',
-  file: '/icons/files/file.svg',
-  text: '/icons/files/text.svg',
-  image: '/icons/files/image.svg',
-  video: '/icons/files/video.svg',
-  audio: '/icons/files/audio.svg',
-  pdf: '/icons/files/pdf.svg',
-  archive: '/icons/files/archive.svg',
-  code: '/icons/files/code.svg',
-  executable: '/icons/files/executable.svg',
+  folder: '/icons/folders/folder.ico',
+  folderOpen: '/icons/folders/folder.ico',
+  file: '/icons/files/generic.ico',
+  text: '/icons/files/text.ico',
+  image: '/icons/files/image.ico',
+  video: '/icons/files/video.ico',
+  audio: '/icons/files/audio.ico',
+  pdf: '/icons/files/document.ico',
+  archive: '/icons/folders/zip.ico',
+  code: '/icons/applications/visualcode.ico',
+  executable: '/icons/files/windowexecutable.ico',
 };
 
-// App icons
+// App icons (using ICO files from public/icons/applications)
 export const APP_ICONS = {
-  fileExplorer: '/icons/apps/file-explorer.svg',
-  notepad: '/icons/apps/notepad.svg',
-  settings: '/icons/apps/settings.svg',
-  edge: '/icons/apps/edge.svg',
-  terminal: '/icons/apps/terminal.svg',
-  calculator: '/icons/apps/calculator.svg',
-  photos: '/icons/apps/photos.svg',
-  store: '/icons/apps/store.svg',
-  mail: '/icons/apps/mail.svg',
-  calendar: '/icons/apps/calendar.svg',
+  fileExplorer: '/icons/folders/explorer.ico',
+  notepad: '/icons/applications/notepad.ico',
+  settings: '/icons/applications/settings.ico',
+  edge: '/icons/applications/edge.ico',
+  terminal: '/icons/applications/terminal.ico',
+  calculator: '/icons/applications/calculator.ico',
+  photos: '/icons/files/image.ico',
+  store: '/icons/applications/store3.ico',
+  mail: '/icons/applications/stickynotes.ico',
+  calendar: '/icons/applications/calendar.ico',
 };
 
-// Quick access icons
+// Quick access icons (using ICO files from public/icons/folders)
 export const QUICK_ACCESS_ICONS = {
-  desktop: '/icons/files/desktop.svg',
-  downloads: '/icons/files/downloads.svg',
-  documents: '/icons/files/documents.svg',
-  pictures: '/icons/files/pictures.svg',
-  music: '/icons/files/music.svg',
-  videos: '/icons/files/videos.svg',
-  thisPC: '/icons/files/this-pc.svg',
-  network: '/icons/files/network.svg',
+  desktop: '/icons/folders/desktop.ico',
+  downloads: '/icons/folders/downloads.ico',
+  documents: '/icons/folders/documents.ico',
+  pictures: '/icons/folders/pictures.ico',
+  music: '/icons/folders/music.ico',
+  videos: '/icons/folders/videos.ico',
+  thisPC: '/icons/folders/explorer.ico',
+  network: '/icons/folders/network.ico',
 };
 
 // Get icon for file extension

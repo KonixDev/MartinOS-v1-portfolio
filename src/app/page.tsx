@@ -7,6 +7,7 @@ import { Taskbar } from '@/components/taskbar';
 import { StartMenu } from '@/components/start-menu';
 import { DesktopContextMenu } from '@/components/context-menu';
 import { BootScreen } from '@/components/boot';
+import { FileDndProvider } from '@/components/dnd';
 import { useKeyboardShortcuts } from '@/hooks';
 import { initializeFileSystem } from '@/lib/filesystem/defaultFiles';
 import { useThemeStore, WALLPAPERS } from '@/stores/themeStore';
@@ -75,31 +76,33 @@ export default function Home() {
   }
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-win-bg-primary dark:bg-win-dark-bg-primary">
-      {/* Desktop with Icons */}
-      <Desktop>
-        <DesktopGrid />
-      </Desktop>
+    <FileDndProvider>
+      <div className="relative w-screen h-screen overflow-hidden bg-win-bg-primary dark:bg-win-dark-bg-primary">
+        {/* Desktop with Icons */}
+        <Desktop>
+          <DesktopGrid />
+        </Desktop>
 
-      {/* Window Manager */}
-      <WindowManager />
+        {/* Window Manager */}
+        <WindowManager />
 
-      {/* Start Menu */}
-      <StartMenu
-        isOpen={isStartMenuOpen}
-        onClose={handleStartMenuClose}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
+        {/* Start Menu */}
+        <StartMenu
+          isOpen={isStartMenuOpen}
+          onClose={handleStartMenuClose}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
 
-      {/* Taskbar */}
-      <Taskbar
-        onStartClick={handleStartClick}
-        isStartMenuOpen={isStartMenuOpen}
-      />
+        {/* Taskbar */}
+        <Taskbar
+          onStartClick={handleStartClick}
+          isStartMenuOpen={isStartMenuOpen}
+        />
 
-      {/* Context Menus */}
-      <DesktopContextMenu />
-    </div>
+        {/* Context Menus */}
+        <DesktopContextMenu />
+      </div>
+    </FileDndProvider>
   );
 }

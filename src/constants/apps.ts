@@ -1,15 +1,7 @@
 import { AppConfig } from '@/types';
-import {
-  FolderFilled,
-  DocumentTextFilled,
-  SettingsFilled,
-  GlobeFilled,
-  WindowConsoleFilled,
-  CalculatorFilled,
-  ImageFilled,
-} from '@fluentui/react-icons';
-import React, { lazy, ComponentType } from 'react';
+import { lazy, ComponentType } from 'react';
 import type { AppProps } from '@/types';
+import { APP_ICONS } from './icons';
 
 // Lazy-loaded App Components for code splitting
 const FileExplorer = lazy(() =>
@@ -34,22 +26,11 @@ const ImageViewer = lazy(() =>
   import('@/apps/image-viewer').then((mod) => ({ default: mod.ImageViewer }))
 );
 
-// Helper to create colored icon
-const createIcon = (
-  IconComponent: React.ComponentType<{ style?: React.CSSProperties }>,
-  color: string
-) =>
-  React.createElement(
-    'div',
-    { style: { color, width: '100%', height: '100%' } },
-    React.createElement(IconComponent, { style: { width: '100%', height: '100%' } })
-  );
-
 export const APP_REGISTRY: Record<string, AppConfig> = {
   'file-explorer': {
     id: 'file-explorer',
     name: 'File Explorer',
-    icon: createIcon(FolderFilled, '#FFB900'),
+    icon: APP_ICONS.fileExplorer,
     component: FileExplorer as ComponentType<AppProps>,
     defaultSize: { width: 900, height: 600 },
     minSize: { width: 400, height: 300 },
@@ -57,7 +38,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   notepad: {
     id: 'notepad',
     name: 'Notepad',
-    icon: createIcon(DocumentTextFilled, '#0078D4'),
+    icon: APP_ICONS.notepad,
     component: Notepad as ComponentType<AppProps>,
     defaultSize: { width: 650, height: 450 },
     minSize: { width: 300, height: 200 },
@@ -65,7 +46,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   settings: {
     id: 'settings',
     name: 'Settings',
-    icon: createIcon(SettingsFilled, '#6B6B6B'),
+    icon: APP_ICONS.settings,
     component: Settings as ComponentType<AppProps>,
     defaultSize: { width: 1000, height: 700 },
     minSize: { width: 150, height: 500 },
@@ -74,7 +55,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   browser: {
     id: 'browser',
     name: 'Edge',
-    icon: createIcon(GlobeFilled, '#0078D4'),
+    icon: APP_ICONS.edge,
     component: Browser as ComponentType<AppProps>,
     defaultSize: { width: 1200, height: 800 },
     minSize: { width: 100, height: 400 },
@@ -82,7 +63,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   terminal: {
     id: 'terminal',
     name: 'Terminal',
-    icon: createIcon(WindowConsoleFilled, '#0C0C0C'),
+    icon: APP_ICONS.terminal,
     component: Terminal as ComponentType<AppProps>,
     defaultSize: { width: 800, height: 500 },
     minSize: { width: 400, height: 300 },
@@ -90,7 +71,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   calculator: {
     id: 'calculator',
     name: 'Calculator',
-    icon: createIcon(CalculatorFilled, '#0078D4'),
+    icon: APP_ICONS.calculator,
     component: Calculator as ComponentType<AppProps>,
     defaultSize: { width: 320, height: 500 },
     minSize: { width: 280, height: 400 },
@@ -99,7 +80,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
   'image-viewer': {
     id: 'image-viewer',
     name: 'Photos',
-    icon: createIcon(ImageFilled, '#FF8C00'),
+    icon: APP_ICONS.photos,
     component: ImageViewer as ComponentType<AppProps>,
     defaultSize: { width: 800, height: 600 },
     minSize: { width: 400, height: 300 },

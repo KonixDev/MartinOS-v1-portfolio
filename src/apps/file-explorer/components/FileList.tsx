@@ -1,10 +1,11 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useDroppable } from '@dnd-kit/core';
 import { useContextMenu } from 'react-contexify';
 import { cn } from '@/lib/utils';
 import { useFileSystemStore, useWindowStore } from '@/stores';
-import { FileSystemItem } from '@/types';
+import type { FileSystemItem, DropData } from '@/types';
 import { FileItem } from './FileItem';
 import { FileContextMenu, FILE_MENU_ID } from '@/components/context-menu/FileContextMenu';
 import { FolderContextMenu, FOLDER_MENU_ID } from '@/components/context-menu/FolderContextMenu';
@@ -13,7 +14,7 @@ import { APP_REGISTRY } from '@/constants/apps';
 
 export function FileList() {
   const items = useFileSystemStore((state) => state.items);
-  const selectedItems = useFileSystemStore((state) => state.selectedItems);
+  const selectedItemPaths = useFileSystemStore((state) => state.selectedItems);
   const selectItem = useFileSystemStore((state) => state.selectItem);
   const clearSelection = useFileSystemStore((state) => state.clearSelection);
   const navigateTo = useFileSystemStore((state) => state.navigateTo);
@@ -24,6 +25,20 @@ export function FileList() {
   // Context menu hooks
   const { show: showFileMenu } = useContextMenu({ id: FILE_MENU_ID });
   const { show: showFolderMenu } = useContextMenu({ id: FOLDER_MENU_ID });
+
+  // Get selected items as FileSystemItem objects for drag data
+  const selectedItems = useMemo(() => {
+    return items.filter((item) => selectedItemPaths.includes(item.path));
+  }, [items, selectedItemPaths]);
+
+  // Droppable for the current folder (empty space drop)
+  const { setNodeRef: setDropRef, isOver: isOverContainer } = useDroppable({
+    id: `drop-current-folder-${currentPath}`,
+    data: {
+      type: 'folder',
+      targetPath: currentPath,
+    } as DropData,
+  });
 
   const handleClick = useCallback(
     (item: FileSystemItem, e: React.MouseEvent) => {
@@ -214,7 +229,11 @@ export function FileList() {
   if (items.length === 0) {
     return (
       <div
-        className="flex items-center justify-center h-full"
+        ref={setDropRef}
+        className={cn(
+          'flex items-center justify-center h-full',
+          isOverContainer && 'bg-win-accent/10 ring-2 ring-win-accent ring-inset'
+        )}
         onClick={handleContainerClick}
       >
         <p className="text-win-text-secondary dark:text-win-dark-text-secondary text-sm">
@@ -226,10 +245,12 @@ export function FileList() {
 
   return (
     <div
+      ref={setDropRef}
       className={cn(
         'min-h-full p-2',
         'grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-1',
-        'content-start'
+        'content-start',
+        isOverContainer && 'bg-win-accent/5'
       )}
       onClick={handleContainerClick}
     >
@@ -237,7 +258,9 @@ export function FileList() {
         <FileItem
           key={item.path}
           item={item}
-          isSelected={selectedItems.includes(item.path)}
+          isSelected={selectedItemPaths.includes(item.path)}
+          selectedItems={selectedItems}
+          currentPath={currentPath}
           onClick={(e) => handleClick(item, e)}
           onDoubleClick={() => handleDoubleClick(item)}
           onContextMenu={(e) => handleContextMenu(item, e)}

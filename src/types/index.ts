@@ -3,6 +3,7 @@ export * from './window';
 export * from './file';
 export * from './app';
 export * from './settings';
+export * from './dnd';
 
 // System tray types
 export interface SystemTrayItem {
