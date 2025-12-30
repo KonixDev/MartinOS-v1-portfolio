@@ -173,3 +173,121 @@ export const updateFileContent = async (
     return { success: false, error: String(error) };
   }
 };
+
+export const moveItem = async (
+  fromPath: string,
+  toPath: string
+): Promise<FileOperationResult> => {
+  try {
+    const item = await getItem(fromPath);
+    if (!item) {
+      return { success: false, error: 'Item not found' };
+    }
+
+    const newParentPath = getParentPath(toPath);
+    const newName = getFileName(toPath);
+
+    // Check if destination already exists
+    const existing = await getItem(toPath);
+    if (existing) {
+      return { success: false, error: 'An item with this name already exists at the destination' };
+    }
+
+    // Check if destination folder exists
+    if (newParentPath !== '/') {
+      const parentFolder = await getItem(newParentPath);
+      if (!parentFolder || parentFolder.type !== 'folder') {
+        return { success: false, error: 'Destination folder does not exist' };
+      }
+    }
+
+    // If it's a folder, we need to move all children recursively
+    if (item.type === 'folder') {
+      const children = await getChildren(fromPath);
+      for (const child of children) {
+        const childNewPath = joinPath(toPath, child.name);
+        await moveItem(child.path, childNewPath);
+      }
+    }
+
+    // Update the item's path and parent
+    await db.items.where('path').equals(fromPath).modify({
+      name: newName,
+      path: toPath,
+      parentPath: newParentPath,
+      modifiedAt: new Date(),
+    });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+};
+
+export const copyItem = async (
+  fromPath: string,
+  toPath: string
+): Promise<FileOperationResult> => {
+  try {
+    const item = await getItem(fromPath);
+    if (!item) {
+      return { success: false, error: 'Item not found' };
+    }
+
+    const newParentPath = getParentPath(toPath);
+    const newName = getFileName(toPath);
+
+    // Check if destination already exists
+    const existing = await getItem(toPath);
+    if (existing) {
+      return { success: false, error: 'An item with this name already exists at the destination' };
+    }
+
+    // Check if destination folder exists
+    if (newParentPath !== '/') {
+      const parentFolder = await getItem(newParentPath);
+      if (!parentFolder || parentFolder.type !== 'folder') {
+        return { success: false, error: 'Destination folder does not exist' };
+      }
+    }
+
+    const now = new Date();
+
+    // Create copy of the item
+    const newItem: FileSystemItem = {
+      name: newName,
+      path: toPath,
+      parentPath: newParentPath,
+      type: item.type,
+      mimeType: item.mimeType,
+      content: item.content,
+      size: item.size,
+      createdAt: now,
+      modifiedAt: now,
+    };
+
+    await db.items.add(newItem);
+
+    // If it's a folder, copy all children recursively
+    if (item.type === 'folder') {
+      const children = await getChildren(fromPath);
+      for (const child of children) {
+        const childNewPath = joinPath(toPath, child.name);
+        await copyItem(child.path, childNewPath);
+      }
+    }
+
+    return { success: true, item: newItem };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+};
+
+export const itemExists = async (path: string): Promise<boolean> => {
+  const item = await getItem(path);
+  return !!item;
+};
+
+export const getAllItems = async (): Promise<FileSystemItem[]> => {
+  return db.items.toArray();
+};

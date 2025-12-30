@@ -30,7 +30,7 @@ export function WindowManager() {
               zIndex={window.zIndex}
             >
               {AppComponent ? (
-                <AppComponent windowId={window.id} />
+                <AppComponent windowId={window.id} props={window.props} />
               ) : (
                 <div className="flex items-center justify-center h-full text-win-text-secondary dark:text-win-dark-text-secondary">
                   <p>App not found: {window.appId}</p>

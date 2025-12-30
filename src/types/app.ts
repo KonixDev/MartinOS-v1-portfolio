@@ -3,6 +3,7 @@ import { ComponentType } from 'react';
 export interface AppProps {
   windowId: string;
   initialPath?: string;
+  props?: Record<string, unknown>;
 }
 
 export interface AppConfig {

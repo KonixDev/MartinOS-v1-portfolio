@@ -29,6 +29,8 @@ export interface WindowState {
   prevY?: number;
   prevWidth?: number;
   prevHeight?: number;
+  // App-specific props (e.g., filePath for notepad/image-viewer)
+  props?: Record<string, unknown>;
 }
 
 export interface WindowActions {

@@ -10,6 +10,13 @@ import {
 } from '@fluentui/react-icons';
 import React from 'react';
 
+// App Components
+import { FileExplorer } from '@/apps/file-explorer';
+import { Notepad } from '@/apps/notepad';
+import { Settings } from '@/apps/settings';
+import { Calculator } from '@/apps/calculator';
+import { Terminal } from '@/apps/terminal';
+
 // Placeholder components - will be replaced with actual implementations
 const PlaceholderApp = () => null;
 
@@ -23,7 +30,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     id: 'file-explorer',
     name: 'File Explorer',
     icon: createIcon(FolderFilled, '#FFB900'),
-    component: PlaceholderApp,
+    component: FileExplorer,
     defaultSize: { width: 900, height: 600 },
     minSize: { width: 400, height: 300 },
   },
@@ -31,7 +38,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     id: 'notepad',
     name: 'Notepad',
     icon: createIcon(DocumentTextFilled, '#0078D4'),
-    component: PlaceholderApp,
+    component: Notepad,
     defaultSize: { width: 650, height: 450 },
     minSize: { width: 300, height: 200 },
   },
@@ -39,7 +46,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     id: 'settings',
     name: 'Settings',
     icon: createIcon(SettingsFilled, '#6B6B6B'),
-    component: PlaceholderApp,
+    component: Settings,
     defaultSize: { width: 1000, height: 700 },
     minSize: { width: 750, height: 500 },
     singleton: true,
@@ -56,7 +63,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     id: 'terminal',
     name: 'Terminal',
     icon: createIcon(WindowConsoleFilled, '#0C0C0C'),
-    component: PlaceholderApp,
+    component: Terminal,
     defaultSize: { width: 800, height: 500 },
     minSize: { width: 400, height: 300 },
   },
@@ -64,7 +71,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     id: 'calculator',
     name: 'Calculator',
     icon: createIcon(CalculatorFilled, '#0078D4'),
-    component: PlaceholderApp,
+    component: Calculator,
     defaultSize: { width: 320, height: 500 },
     minSize: { width: 280, height: 400 },
     singleton: true,
