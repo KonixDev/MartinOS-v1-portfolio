@@ -11,6 +11,7 @@ export const FILE_ICONS = {
   archive: '/icons/folders/zip.ico',
   code: '/icons/applications/visualcode.ico',
   executable: '/icons/files/windowexecutable.ico',
+  url: '/icons/applications/edge.ico',
 };
 
 // App icons (using ICO files from public/icons/applications)

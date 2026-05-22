@@ -33,6 +33,13 @@ export const DEFAULT_FOLDERS: FileSystemItem[] = [
 
 export const DEFAULT_FILES: FileSystemItem[] = [
   createDefaultItem(
+    'Portfolio.url',
+    '/Desktop/Portfolio.url',
+    '/Desktop',
+    'file',
+    'https://mibio.app/martin'
+  ),
+  createDefaultItem(
     'Welcome.txt',
     '/Desktop/Welcome.txt',
     '/Desktop',

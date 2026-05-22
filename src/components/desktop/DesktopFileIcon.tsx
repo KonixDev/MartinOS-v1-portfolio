@@ -60,6 +60,8 @@ function getFileIconPath(item: FileSystemItem): string {
       return FILE_ICONS.archive;
     case 'pdf':
       return FILE_ICONS.pdf;
+    case 'url':
+      return FILE_ICONS.url;
     default:
       return FILE_ICONS.file;
   }

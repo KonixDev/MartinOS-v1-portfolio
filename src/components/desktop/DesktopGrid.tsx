@@ -137,7 +137,9 @@ export function DesktopGrid() {
         // Open file based on extension
         const extension = item.name.split('.').pop()?.toLowerCase() || '';
 
-        if (['txt', 'md', 'json', 'js', 'ts', 'css', 'html'].includes(extension)) {
+        if (extension === 'url' && item.content) {
+          window.open(item.content, '_blank', 'noopener,noreferrer');
+        } else if (['txt', 'md', 'json', 'js', 'ts', 'css', 'html'].includes(extension)) {
           openWindow('notepad', item.name, {
             width: 650,
             height: 450,
